@@ -19,8 +19,18 @@
   },
   "homepage": "https://github.com/AdithyaShenal/MCLROS-Backend#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "config": "^4.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.2",
+    "joi-objectid": "^4.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "mongoose": "^9.0.0",
+    "morgan": "^1.10.1",
     "nodemon": "^3.1.11"
   }
 }
