@@ -8,4 +8,6 @@ const router = express.Router();
 
 router.post("/",validate(farmerValidator.createFarmerSchema),farmerController.createFarmer);
 
+router.get("/all",farmerController.getAllFarmers);
+
 export default router;
