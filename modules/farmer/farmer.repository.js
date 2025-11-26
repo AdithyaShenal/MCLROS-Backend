@@ -23,3 +23,8 @@ export async function findByName(name) {
 export async function findByRoute(route) {
   return await Farmer.find({ route });
 }
+
+export async function update(id,data) {
+    return await Farmer.findByIdAndUpdate(id,data,{
+        new:true,});
+}

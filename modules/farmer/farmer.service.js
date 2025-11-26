@@ -28,3 +28,10 @@ export async function getFarmersByRoute(route) {
   if (!farmers || farmers.length === 0) throw new Error("No farmers found in this route");
   return farmers;
 }
+
+export async function updateFarmer(id,data) {
+    const farmer = await farmerRepository.findById(id);
+    if(!farmer) throw new Error("Farmer not found");
+
+    return farmerRepository.update(id,data);
+}

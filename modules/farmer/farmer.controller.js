@@ -46,3 +46,12 @@ export async function getFarmersByRoute(req, res, next) {
     next(err);
   }
 }
+
+export async function updateFarmer(req, res, next) {
+    try{
+        const farmer = await farmerService.updateFarmer(req.params.id,req.body);
+        return res.json(farmer);
+    }catch(err){
+        next(err);
+    }
+}
