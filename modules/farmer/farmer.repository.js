@@ -28,3 +28,7 @@ export async function update(id,data) {
     return await Farmer.findByIdAndUpdate(id,data,{
         new:true,});
 }
+
+export async function remove(id) {
+  return await Farmer.findByIdAndDelete(id);
+}

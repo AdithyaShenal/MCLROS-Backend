@@ -55,3 +55,12 @@ export async function updateFarmer(req, res, next) {
         next(err);
     }
 }
+
+export async function deleteFarmer(req, res, next) {
+  try {
+    await farmerService.deleteFarmer(req.params.id);
+    return res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}

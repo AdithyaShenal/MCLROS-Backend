@@ -35,3 +35,11 @@ export async function updateFarmer(id,data) {
 
     return farmerRepository.update(id,data);
 }
+
+export async function deleteFarmer(id) {
+  const farmer = await farmerRepository.findById(id);
+  if (!farmer) throw new Error("Farmer not found");
+
+  return farmerRepository.remove(id);
+}
+

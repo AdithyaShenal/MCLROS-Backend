@@ -18,4 +18,6 @@ router.get("/route/:route",validate(farmerValidator.farmerRouteSchema),farmerCon
 
 router.put("/:id",validate(farmerValidator.farmerIdSchema),validate(farmerValidator.updateFarmerSchema),farmerController.updateFarmer);
 
+router.delete("/:id",validate(farmerValidator.farmerIdSchema),farmerController.deleteFarmer);
+
 export default router;
