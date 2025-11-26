@@ -9,3 +9,7 @@ export async function create(data) {
 export async function findAll(){
     return await Farmer.find();
 }
+
+export async function findById(id) {
+    return await Farmer.findById(id);
+}

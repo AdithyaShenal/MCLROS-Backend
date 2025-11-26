@@ -10,4 +10,6 @@ router.post("/",validate(farmerValidator.createFarmerSchema),farmerController.cr
 
 router.get("/all",farmerController.getAllFarmers);
 
+router.get("/:id",validate(farmerValidator.farmerIdSchema),farmerController.getFarmersById);
+
 export default router;

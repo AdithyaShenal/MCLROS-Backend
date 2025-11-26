@@ -1,3 +1,4 @@
+//import { result } from "lodash";
 import * as farmerService from "./farmer.service.js";
 
 export async function createFarmer(req, res, next) {
@@ -11,8 +12,17 @@ export async function createFarmer(req, res, next) {
 
 export async function getAllFarmers(req, res, next){
     try{
-        const farmers = await farmerService.getAllFarmers();
-        return res.json(farmers);
+        const farmer = await farmerService.getAllFarmers();
+        return res.json(farmer);
+    }catch(err){
+        next(err);
+    }
+}
+
+export async function getFarmersById(req, res ,next) {
+    try{
+        const farmer = await farmerService.getFarmersById(req.params.id);
+        return res.json(farmer);
     }catch(err){
         next(err);
     }
