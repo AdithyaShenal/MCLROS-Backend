@@ -1,11 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-<<<<<<< Updated upstream
-=======
 import farmerRoutes from "./modules/farmer/farmer.routes.js"; 
 import productionRoutes from "./modules/production/poduction.routes.js";
 
->>>>>>> Stashed changes
 const app = express();
 
 mongoose
@@ -16,16 +13,10 @@ mongoose
 // Middlewares
 app.use(express.json());
 
-<<<<<<< Updated upstream
 //Routes
-=======
 
 app.use("/api/farmer", farmerRoutes); 
 app.use("/api/production", productionRoutes);
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
