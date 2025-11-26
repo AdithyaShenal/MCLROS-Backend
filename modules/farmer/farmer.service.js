@@ -15,3 +15,10 @@ export async function getFarmersById(id){
 
     return farmer;
 }
+
+export async function getFarmersByName(name) {
+    const farmers = await farmerRepository.findByName(name);
+    if(!farmers || farmers.length === 0) throw new Error("No farmer found with this relevant name");
+
+    return farmers;
+}

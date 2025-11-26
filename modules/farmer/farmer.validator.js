@@ -23,3 +23,9 @@ export const farmerIdSchema = Joi.object({
         id: Joi.string().required()
     })
 });
+
+export const farmerNameSchema = Joi.object({
+    params:Joi.object({
+        name: Joi.string().required()
+    })
+})

@@ -13,3 +13,9 @@ export async function findAll(){
 export async function findById(id) {
     return await Farmer.findById(id);
 }
+
+export async function findByName(name) {
+    return await Farmer.find({
+        name:{ $regex: name, $options: "i"}
+    });
+}
