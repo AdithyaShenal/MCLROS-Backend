@@ -22,6 +22,9 @@ app.use(express.json());
 
 app.use("/api/farmer", farmerRoutes); 
 app.use("/api/production", productionRoutes);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 const port = process.env.PORT || 4000;
