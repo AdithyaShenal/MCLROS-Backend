@@ -14,4 +14,6 @@ router.get("/:id",validate(farmerValidator.farmerIdSchema),farmerController.getF
 
 router.get("/name/:name",validate(farmerValidator.farmerNameSchema),farmerController.getFarmersByName);
 
+router.get("/route/:route",validate(farmerValidator.farmerRouteSchema),farmerController.getFarmersByRoute);
+
 export default router;

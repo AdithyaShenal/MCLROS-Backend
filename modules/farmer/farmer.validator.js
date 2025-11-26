@@ -28,4 +28,10 @@ export const farmerNameSchema = Joi.object({
     params:Joi.object({
         name: Joi.string().required()
     })
-})
+});
+
+export const farmerRouteSchema = Joi.object({
+  params: Joi.object({
+    route: Joi.number().integer().min(1).max(6).required()
+  })
+});

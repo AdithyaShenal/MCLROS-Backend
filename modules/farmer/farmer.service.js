@@ -22,3 +22,9 @@ export async function getFarmersByName(name) {
 
     return farmers;
 }
+
+export async function getFarmersByRoute(route) {
+  const farmers = await farmerRepository.findByRoute(route);
+  if (!farmers || farmers.length === 0) throw new Error("No farmers found in this route");
+  return farmers;
+}

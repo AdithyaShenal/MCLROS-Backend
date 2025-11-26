@@ -37,3 +37,12 @@ export async function getFarmersByName(req, res, next) {
         next(err);
     }
 }
+
+export async function getFarmersByRoute(req, res, next) {
+  try {
+    const farmers = await farmerService.getFarmersByRoute(parseInt(req.params.route));
+    return res.json(farmers);
+  } catch (err) {
+    next(err);
+  }
+}

@@ -19,3 +19,7 @@ export async function findByName(name) {
         name:{ $regex: name, $options: "i"}
     });
 }
+
+export async function findByRoute(route) {
+  return await Farmer.find({ route });
+}
