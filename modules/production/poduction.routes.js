@@ -13,4 +13,10 @@ router.post(
   productionController.blockProduction
 );
 
+router.get(
+  "/farmer/:farmer_id",
+  validate(productionValidator.farmerIdSchema),
+  productionController.getProductionsByFarmerId
+);
+
 export default router;

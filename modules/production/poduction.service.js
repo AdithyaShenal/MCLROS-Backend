@@ -15,3 +15,9 @@ export async function blockProduction(production_id) {
   
   return productionRepository.updateStatus(production_id, 'blocked');
 }
+
+export async function getProductionsByFarmerId(farmer_id) {
+  const productions = await productionRepository.findByFarmerId(farmer_id);
+  if (!productions || productions.length === 0) throw new Error("No production records found for this farmer");
+  return productions;
+}

@@ -20,3 +20,12 @@ export async function blockProduction(req, res, next) {
     next(err);
   }
 }
+
+export async function getProductionsByFarmerId(req, res, next) {
+  try {
+    const productions = await productionService.getProductionsByFarmerId(req.params.farmer_id);
+    return res.json(productions);
+  } catch (err) {
+    next(err);
+  }
+}
