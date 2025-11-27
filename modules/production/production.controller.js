@@ -8,3 +8,15 @@ export async function getAllPendingProductions(req, res, next) {
     next(err);
   }
 }
+
+export async function blockProduction(req, res, next) {
+  try {
+    const production = await productionService.blockProduction(req.params.production_id);
+    return res.json({ 
+      message: "Production blocked successfully", 
+      production 
+    });
+  } catch (err) {
+    next(err);
+  }
+}

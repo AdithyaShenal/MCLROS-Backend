@@ -7,4 +7,10 @@ const router = express.Router();
 
 router.get("/pending/all", productionController.getAllPendingProductions);
 
+router.post(
+  "/:production_id/block",
+  validate(productionValidator.productionIdSchema),
+  productionController.blockProduction
+);
+
 export default router;
