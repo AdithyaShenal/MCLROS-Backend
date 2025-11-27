@@ -1,19 +1,20 @@
 import express from "express";
 import mongoose from "mongoose";
 import farmerRoutes from "./modules/farmer/farmer.routes.js"; 
-import productionRoutes from "./modules/production/poduction.routes.js";
 
 const app = express();
+
 
 mongoose
   .connect("mongodb://localhost:27017/MCLROS_DB")
   .then(() => console.log("Successfully connected to mongoDB."))
   .catch((err) => console.log(err.message));
 
-// Middlewares
+
 app.use(express.json());
 
-//Routes
+
+app.use("/api/farmer", farmerRoutes); 
 
 app.use("/api/farmer", farmerRoutes); 
 app.use("/api/production", productionRoutes);
