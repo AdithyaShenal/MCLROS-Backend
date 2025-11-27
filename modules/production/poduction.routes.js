@@ -7,16 +7,10 @@ const router = express.Router();
 
 router.get("/pending/all", productionController.getAllPendingProductions);
 
-router.post(
-  "/:production_id/block",
-  validate(productionValidator.productionIdSchema),
-  productionController.blockProduction
-);
+router.post("/:production_id/block",validate(productionValidator.productionIdSchema),productionController.blockProduction);
 
-router.get(
-  "/farmer/:farmer_id",
-  validate(productionValidator.farmerIdSchema),
-  productionController.getProductionsByFarmerId
-);
+router.get("/farmer/:farmer_id",validate(productionValidator.farmerIdSchema),productionController.getProductionsByFarmerId);
+
+router.get("/route/:route",validate(productionValidator.productionRouteSchema),productionController.getProductionsByRoute);
 
 export default router;

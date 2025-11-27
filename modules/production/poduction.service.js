@@ -21,3 +21,9 @@ export async function getProductionsByFarmerId(farmer_id) {
   if (!productions || productions.length === 0) throw new Error("No production records found for this farmer");
   return productions;
 }
+
+export async function getProductionsByRoute(route) {
+  const productions = await productionRepository.findByRoute(route);
+  if (!productions || productions.length === 0) throw new Error("No production records found for this route");
+  return productions;
+}

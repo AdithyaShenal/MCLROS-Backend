@@ -11,3 +11,9 @@ export const farmerIdSchema = Joi.object({
     farmer_id: Joi.string().required()
   })
 });
+
+export const productionRouteSchema = Joi.object({
+  params: Joi.object({
+    route: Joi.number().integer().min(1).max(6).required()
+  })
+});

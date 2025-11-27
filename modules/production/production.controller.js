@@ -29,3 +29,12 @@ export async function getProductionsByFarmerId(req, res, next) {
     next(err);
   }
 }
+
+export async function getProductionsByRoute(req, res, next) {
+  try {
+    const productions = await productionService.getProductionsByRoute(parseInt(req.params.route));
+    return res.json(productions);
+  } catch (err) {
+    next(err);
+  }
+}
