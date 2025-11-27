@@ -16,6 +16,9 @@ app.use(express.json());
 
 app.use("/api/farmer", farmerRoutes); 
 
+app.use("/api/farmer", farmerRoutes); 
+app.use("/api/production", productionRoutes);
+
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);
