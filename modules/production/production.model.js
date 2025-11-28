@@ -1,66 +1,81 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
+const embeddedFarmerSchema = new mongoose.Schema(
+  {
+    name: String,
+    location: {
+      lat: Number,
+      lon: Number,
+    },
+    address: String,
+    phone: String,
+  },
+  { _id: false }
+);
 
 const qualitySchema = new mongoose.Schema({
   fat: {
     type: Number,
-    required: true
   },
   lat: {
     type: Number,
-    required: true
   },
   density: {
     type: Number,
-    required: true
   },
   water_ratio: {
     type: Number,
-    required: true
-  }
+  },
 });
 
-const productionSchema = new mongoose.Schema({
-  farmer_name: {
-    type: String,
-    required: true,
-    trim: true
+const productionSchema = new mongoose.Schema(
+  {
+    farmer: {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Farmer",
+        required: true,
+      },
+      info: {
+        type: embeddedFarmerSchema,
+        required: true,
+      },
+    },
+    volume: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    registration_time: {
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["pending", "completed"],
+      default: "pending",
+    },
+    blocked: {
+      type: Boolean,
+      default: false,
+    },
+    quality: {
+      type: qualitySchema,
+    },
+    route: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 6,
+    },
   },
-  farmer_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Farmer',
-    required: true
-  },
-  volume: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  registration_time: {
-    type: Date,
-    default: Date.now
-  },
-  location: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'blocked'],
-    default: 'pending'
-  },
-  quality: {
-    type: qualitySchema,
-    required: true
-  },
-  route: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 6
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
+const Production = mongoose.model("Production", productionSchema);
 
-export default mongoose.model('Production', productionSchema);
+export default Production;

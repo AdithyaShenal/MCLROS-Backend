@@ -1,23 +1,26 @@
 import express from "express";
 import mongoose from "mongoose";
-import farmerRoutes from "./modules/farmer/farmer.routes.js"; 
+import farmerRoutes from "./modules/farmer/farmer.routes.js";
+import productionRoutes from "./modules/production/poduction.routes.js";
+import routing from "./modules/routing/routing.routes.js";
+import morgan from "morgan";
 
 const app = express();
 
-
+// DB Connection
 mongoose
   .connect("mongodb://localhost:27017/MCLROS_DB")
   .then(() => console.log("Successfully connected to mongoDB."))
   .catch((err) => console.log(err.message));
 
-
+//Middlewares
+app.use(morgan("tiny"));
 app.use(express.json());
 
-
-app.use("/api/farmer", farmerRoutes); 
-
-app.use("/api/farmer", farmerRoutes); 
+// Routes
+app.use("/api/farmer", farmerRoutes);
 app.use("/api/production", productionRoutes);
+app.use("/api/routing", routing);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

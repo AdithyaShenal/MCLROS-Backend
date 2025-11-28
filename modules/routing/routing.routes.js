@@ -1,87 +1,79 @@
-import axios from "axios";
 import express from "express";
-import Route from "./routing.model.js";
+import axios from "axios";
+import Production from "../production/production.model.js";
 
 const router = express.Router();
 
-const sampleData = {
-  locations: [
-    { production_id: 0, lat: 6.9271, lon: 79.8612, volume: 120 },
-    { production_id: 1, lat: 6.9934, lon: 80.0536, volume: 80 },
-    { production_id: 2, lat: 7.2906, lon: 80.6337, volume: 150 },
-    { production_id: 3, lat: 6.9275, lon: 79.862, volume: 90 },
-    { production_id: 4, lat: 7.0101, lon: 80.05, volume: 110 },
-    { production_id: 5, lat: 6.901, lon: 79.861, volume: 200 },
-    { production_id: 6, lat: 7.123, lon: 80.2345, volume: 70 },
-    { production_id: 7, lat: 6.998, lon: 80.45, volume: 130 },
-    { production_id: 8, lat: 7.05, lon: 80.22, volume: 60 },
-    { production_id: 9, lat: 6.95, lon: 79.9, volume: 140 },
-    { production_id: 10, lat: 6.92, lon: 79.88, volume: 100 },
-    { production_id: 11, lat: 7.1, lon: 80.6, volume: 180 },
-    { production_id: 12, lat: 7.03, lon: 80.4, volume: 90 },
-    { production_id: 13, lat: 6.98, lon: 79.95, volume: 120 },
-    { production_id: 14, lat: 7.2, lon: 80.5, volume: 110 },
-    { production_id: 15, lat: 6.97, lon: 79.87, volume: 130 },
-    { production_id: 16, lat: 7.15, lon: 80.3, volume: 160 },
-    { production_id: 17, lat: 6.94, lon: 79.89, volume: 75 },
-    { production_id: 18, lat: 7.18, lon: 80.45, volume: 95 },
-    { production_id: 19, lat: 6.96, lon: 79.92, volume: 85 },
-  ],
-  vehicles: [
-    { id: 0, capacity: 1000 },
-    { id: 1, capacity: 1000 },
-    { id: 2, capacity: 1000 },
-    { id: 3, capacity: 1000 },
-  ],
-};
-
 // Admin Request VRP (Optimized Paths)
-router.get("/routing/optimize", async (req, res) => {
+router.get("/optimize/auto", async (req, res) => {
+  const vehicles = [
+    { vehicle_id: 1, capacity: 15 },
+    { vehicle_id: 2, capacity: 15 },
+    { vehicle_id: 3, capacity: 15 },
+    { vehicle_id: 4, capacity: 15 },
+  ];
+
+  const vehicle_capacities = [15, 15, 15, 15];
+  const depot = { lat: 7.019041, lon: 79.969565 };
+
+  const productions = await Production.find({
+    blocked: false,
+    status: "pending",
+  });
+
+  if (!productions)
+    return res.status(201).json({
+      success: true,
+      message: "No pending productions available in this moment",
+    });
+
+  const coords = [[depot.lon, depot.lat]];
+  const demands = [0];
+  const productionIndexMap = [null];
+
+  productions.forEach((prod) => {
+    coords.push([prod.farmer.info.location.lon, prod.farmer.info.location.lat]);
+    demands.push(prod.volume);
+    productionIndexMap.push(prod);
+  });
+
   try {
     const vrpResponse = await axios.post(
-      "http://localhost/python-server/testing",
-      sampleData
+      "http://127.0.0.1:8000/route-optimize/auto",
+      {
+        coords,
+        demands,
+        vehicle_capacities,
+      }
     );
 
-    const optimizedRoutes = vrpResponse.data.routes; // expected array of routes
+    const routes = vrpResponse.data.routes;
 
-    const allProductions = await Production.find(); // fetch all productions from DB
+    for (const route of routes) {
+      route.vehicle_id = vehicles[route.vehicle_id].vehicle_id;
 
-    const routesToSave = optimizedRoutes.map((route) => {
-      const stopsWithProduction = route.stops.map((stop) => {
-        const prod = allProductions.find(
-          (p) =>
-            p._id.toString() === stop.pro_id.toString() ||
-            p.production_id == stop.pro_id
-        );
+      const mappedStops = route.stops.map((stop) => {
+        const p = productionIndexMap[stop.node];
 
-        if (!prod) throw new Error(`Production ID ${stop.pro_id} not found`);
+        console.log("Production ->", p);
 
         return {
-          order: stop.order,
-          lat: stop.lat,
-          lon: stop.lon,
-          production: {
-            _id: prod._id,
-            farmer_name: prod.farmer_name,
-            farmer_id: prod.farmer_id,
-            volume: prod.volume,
-            registration_time: prod.registration_time,
-            location: prod.location,
-            status: prod.status,
-          },
+          node: stop.node,
+          production: p
+            ? {
+                _id: p._id,
+                volume: p.volume,
+                farmer: p.farmer,
+              }
+            : null,
+          load_after_visit: stop.load_after_visit,
         };
       });
 
-      return {
-        vehicle_id: route.vehicle_id,
-        stops: stopsWithProduction,
-      };
-    });
+      route.stops = mappedStops;
+    }
 
-    const savedRoutes = await Route.insertMany(routesToSave);
-
-    res.json(savedRoutes);
+    res.send(routes);
   } catch (err) {
     console.error("Error optimizing routes:", err.message);
     res.status(500).json({ error: err.message });
@@ -90,3 +82,5 @@ router.get("/routing/optimize", async (req, res) => {
 
 // Driver fetches assigned route
 router.get("/routing/today", (req, res) => {});
+
+export default router;

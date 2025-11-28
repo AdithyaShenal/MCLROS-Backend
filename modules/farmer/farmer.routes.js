@@ -5,19 +5,43 @@ import validate from "../middleware/validate.js";
 
 const router = express.Router();
 
+router.post(
+  "/",
+  validate(farmerValidator.createFarmerSchema),
+  farmerController.createFarmer
+);
 
-router.post("/",validate(farmerValidator.createFarmerSchema),farmerController.createFarmer);
+router.get("/all", farmerController.getAllFarmers);
 
-router.get("/all",farmerController.getAllFarmers);
+router.get(
+  "/:id",
+  validate(farmerValidator.farmerIdSchema),
+  farmerController.getFarmersById
+);
 
-router.get("/:id",validate(farmerValidator.farmerIdSchema),farmerController.getFarmersById);
+router.get(
+  "/name/:name",
+  validate(farmerValidator.farmerNameSchema),
+  farmerController.getFarmersByName
+);
 
-router.get("/name/:name",validate(farmerValidator.farmerNameSchema),farmerController.getFarmersByName);
+router.get(
+  "/route/:route",
+  validate(farmerValidator.farmerRouteSchema),
+  farmerController.getFarmersByRoute
+);
 
-router.get("/route/:route",validate(farmerValidator.farmerRouteSchema),farmerController.getFarmersByRoute);
+router.put(
+  "/:id",
+  validate(farmerValidator.farmerIdSchema),
+  validate(farmerValidator.updateFarmerSchema),
+  farmerController.updateFarmer
+);
 
-router.put("/:id",validate(farmerValidator.farmerIdSchema),validate(farmerValidator.updateFarmerSchema),farmerController.updateFarmer);
-
-router.delete("/:id",validate(farmerValidator.farmerIdSchema),farmerController.deleteFarmer);
+router.delete(
+  "/:id",
+  validate(farmerValidator.farmerIdSchema),
+  farmerController.deleteFarmer
+);
 
 export default router;
