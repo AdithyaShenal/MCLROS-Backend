@@ -4,6 +4,7 @@ import farmerRoutes from "./modules/farmer/farmer.routes.js";
 import productionRoutes from "./modules/production/poduction.routes.js";
 import routing from "./modules/routing/routing.routes.js";
 import morgan from "morgan";
+import err from "./middleware/error.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use("/api/farmer", farmerRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
+app.use(err);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

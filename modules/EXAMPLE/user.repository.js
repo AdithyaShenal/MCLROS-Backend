@@ -15,5 +15,3 @@ export function findById(id) {
     where: { id },
   });
 }
-
-// Directly access mongoBD

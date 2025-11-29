@@ -8,7 +8,7 @@ const qualitySchema = new mongoose.Schema({
   water_ratio: Number,
 });
 
-const productionSchema = new mongoose.Schema(
+export const productionSchema = new mongoose.Schema(
   {
     farmer: {
       type: farmerSchema,
