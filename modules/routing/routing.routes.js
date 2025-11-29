@@ -49,15 +49,18 @@ router.get("/optimize/auto", async (req, res) => {
 
     const routes = vrpResponse.data.routes;
 
+    // Creating routes
     for (const route of routes) {
       route.vehicle_id = vehicles[route.vehicle_id].vehicle_id;
 
+      let order = 1;
       const mappedStops = route.stops.map((stop) => {
         const p = productionIndexMap[stop.node];
 
-        console.log("Production ->", p);
+        // console.log("Production ->", p);
 
         return {
+          order: order++,
           node: stop.node,
           production: p
             ? {
@@ -73,7 +76,7 @@ router.get("/optimize/auto", async (req, res) => {
       route.stops = mappedStops;
     }
 
-    res.send(routes);
+    res.status(200).send(routes);
   } catch (err) {
     console.error("Error optimizing routes:", err.message);
     res.status(500).json({ error: err.message });

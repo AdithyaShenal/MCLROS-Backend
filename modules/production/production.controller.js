@@ -12,19 +12,14 @@ export async function submitProduction(req, res, next) {
     let production = {
       farmer: {
         _id: farmer._id,
-        info: {
-          name: farmer.name,
-          location: {
-            lat: farmer.location.lat,
-            lon: farmer.location.lon,
-          },
-          address: farmer.address,
-          phone: farmer.phone,
-        },
+        name: farmer.name,
+        location: farmer.location,
+        address: farmer.address,
+        phone: farmer.phone,
+        route: farmer.route,
       },
+
       volume: req.body.volume,
-      route: farmer.route,
-      status: "pending",
     };
 
     production = await productionService.submitProduction(production);
