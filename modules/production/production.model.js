@@ -28,7 +28,7 @@ export const productionSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "completed"],
+      enum: ["pending", "awaiting pickup", "collected"],
       default: "pending",
     },
 

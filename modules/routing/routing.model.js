@@ -10,10 +10,15 @@ const stopsSchema = new mongoose.Schema({
 
 const routeSchema = new mongoose.Schema({
   vehicle_id: { type: Number, required: true },
-  vehicle_no: { type: String, required: true },
+  license_no: { type: String, required: true },
   stops: { type: [stopsSchema], required: true },
   distance: { type: Number, required: true, min: 0 },
   load: { type: Number, required: true, min: 0 },
+  status: {
+    type: string,
+    enum: ["dispatched", "completed", "canceled", "inProgress"],
+    default: "dispatched",
+  },
 });
 
 const Route = mongoose.model("Route", routeSchema);
