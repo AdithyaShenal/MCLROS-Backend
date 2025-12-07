@@ -1,25 +1,27 @@
 import axios from "axios";
 import * as routingRepository from "./routing.repository.js";
+import * as erros from "../../Error/errors.js";
+
+const vehicles = [
+  { vehicle_id: 1, capacity: 15, license_no: "ABC 10 10", route: 1 },
+  { vehicle_id: 2, capacity: 15, license_no: "ABC 20 20", route: 2 },
+  { vehicle_id: 3, capacity: 15, license_no: "ABC 30 30", route: 3 },
+  { vehicle_id: 4, capacity: 15, license_no: "ABC 40 40", route: 4 },
+  { vehicle_id: 5, capacity: 15, license_no: "ABC 50 50", route: 5 },
+  { vehicle_id: 6, capacity: 15, license_no: "ABC 60 60", route: 6 },
+];
+
+const vehicle_capacities = [15, 15, 15, 15, 15, 15];
+const depot = { lat: 7.019041, lon: 79.969565 };
 
 export async function generateRoutesAuto() {
-  const vehicles = [
-    { vehicle_id: 1, capacity: 15, license_no: "ABC 10 10" },
-    { vehicle_id: 2, capacity: 15, license_no: "ABC 20 20" },
-    { vehicle_id: 3, capacity: 15, license_no: "ABC 30 30" },
-    { vehicle_id: 4, capacity: 15, license_no: "ABC 40 40" },
-  ];
-
-  const vehicle_capacities = [15, 15, 15, 15];
-  const depot = { lat: 7.019041, lon: 79.969565 };
-
   const productions = await routingRepository.getPendingProduction();
 
   // Handling Error
   if (productions.length === 0) {
-    return {
-      success: true,
-      message: "No pending productions available at this moment",
-    };
+    throw new erros.NotFoundError(
+      "No pending productions available at this moment"
+    );
   }
 
   // Building VRP input
@@ -35,7 +37,7 @@ export async function generateRoutesAuto() {
 
   // Handling Error
   if (coords.length !== demands.length) {
-    throw new Error("coords and demands length must be same");
+    throw new erros.InternalError("coords and demands length must be same");
   }
 
   let vrpResponse;
@@ -43,7 +45,7 @@ export async function generateRoutesAuto() {
 
   try {
     vrpResponse = await axios.post(
-      "http://127.0.0.1:8000/route-optimize/auto",
+      "https://localhost:8000/route-optimize/auto",
       {
         coords,
         demands,
@@ -69,7 +71,7 @@ export async function generateRoutesAuto() {
     };
   }
 
-  // Creating routes
+  // Creating routes (Mapping)
   for (const route of routes) {
     const vehicleIndex = route.vehicle_id;
 
@@ -79,7 +81,7 @@ export async function generateRoutesAuto() {
     }
 
     route.vehicle_id = vehicles[vehicleIndex].vehicle_id;
-    route.vehicle_no = vehicles[vehicleIndex].license_no;
+    route.license_no = vehicles[vehicleIndex].license_no;
 
     let order = 1;
     const mappedStops = route.stops.map((stop) => {
@@ -99,6 +101,7 @@ export async function generateRoutesAuto() {
               _id: p._id,
               volume: p.volume,
               farmer: p.farmer,
+              status: p.status,
             }
           : null,
         load_after_visit: stop.load_after_visit,
@@ -108,7 +111,338 @@ export async function generateRoutesAuto() {
     route.stops = mappedStops;
   }
 
-  await routingRepository.saveRoutes(routes);
+  return routes;
+}
+
+// Generate VRP solution route-wise
+export async function generateRouteWiseAll() {
+  const productions = await routingRepository.getPendingProduction();
+
+  // Handling Error
+  if (!productions || productions.length === 0) {
+    throw new erros.NotFoundError(
+      "No pending productions available at this moment"
+    );
+  }
+
+  const requestBody = [];
+  const depotCoords = [depot.lon, depot.lat];
+
+  const productionIndexMap = [];
+
+  for (let i = 1; i <= 6; i++) {
+    const mapping = { route: i, productionIndexList: [null], vehicles: [] };
+    const structure = {
+      route: i,
+      coords: [],
+      demands: [],
+      vehicle_capacities: [],
+      vehicles: [],
+    };
+
+    structure.coords.push(depotCoords);
+    structure.demands.push(0);
+
+    productions.forEach((prod) => {
+      if (Number(prod.farmer.route) === i) {
+        structure.coords.push([
+          prod.farmer.location.lon,
+          prod.farmer.location.lat,
+        ]);
+        structure.demands.push(Number(prod.volume));
+        mapping.productionIndexList.push(prod);
+      }
+    });
+
+    const vehicle = vehicles.find((v) => v.route === i);
+
+    // Handling Error
+    if (!vehicle) {
+      throw new erros.InternalError(`No vehicle assigned for route ${i}`);
+    }
+    mapping.vehicles.push(vehicle);
+    structure.vehicles.push(vehicle);
+
+    const caps = vehicles.filter((v) => v.route === i).map((v) => v.capacity);
+    if (caps.length === 0)
+      throw new erros.InternalError(
+        "`No vehicle capacity found for route ${i}`"
+      );
+    structure.vehicle_capacities.push(...caps);
+
+    productionIndexMap.push(mapping);
+    requestBody.push(structure);
+  }
+
+  console.log(JSON.stringify(productionIndexMap));
+
+  let vrpResponse;
+
+  try {
+    vrpResponse = await axios.post(
+      "https://localhost:8000/route-optimize/route-wise/all",
+      { requestBody }
+    );
+  } catch (err) {
+    console.log(err);
+    throw new erros.InternalError(`VRP service unreachable: ${err.message}`);
+  }
+
+  const routes = vrpResponse.data;
+  // Handling Error
+  if (routes.length === 0)
+    throw new erros.InternalError("No routes generated by VRP at this time");
+
+  const routeList = [];
+
+  routes.forEach((route) => {
+    const route_id = route["route"];
+
+    const mapping = productionIndexMap.find((obj) => obj.route === route_id);
+
+    // Handling Error
+    if (!mapping) {
+      throw new Error(`No production mapping found for route ${route_id}`);
+    }
+
+    route.routes.forEach((r) => {
+      const mappedStops = r.stops.map((stop) => {
+        const p = mapping.productionIndexList[stop.node] || null;
+        let order = 1;
+        return {
+          order: order++,
+          node: stop.node,
+          production: p
+            ? {
+                _id: p._id,
+                volume: p.volume,
+                farmer: p.farmer,
+              }
+            : null,
+          load_after_visit: stop.load_after_visit,
+        };
+      });
+
+      r.stops = mappedStops;
+      r.license_no = mapping.vehicles[r.vehicle_id].license_no;
+      routeList.push(r);
+    });
+  });
+
+  return routeList;
+}
+
+// Generate VRP solution route-wise by route
+export async function generateRouteWise(routeId) {
+  const productions = await routingRepository.getPendingProductionByRoute(
+    routeId
+  );
+
+  // Handling Error
+  if (productions.length === 0) {
+    throw new erros.NotFoundError(
+      "No pending productions available at this moment"
+    );
+  }
+
+  const vehicleCapacities = [];
+  const vehicleList = [];
+
+  vehicles.forEach((vehicle) => {
+    if (vehicle.route === Number(routeId)) {
+      vehicleCapacities.push(vehicle.capacity);
+      vehicleList.push(vehicle);
+    }
+  });
+
+  // Handling Error
+  if (vehicleCapacities.length === 0) {
+    throw new Error(`No vehicles available for route ${routeId}`);
+  }
+
+  // Building VRP input
+  const coords = [[depot.lon, depot.lat]];
+  const demands = [0];
+  const productionIndexMap = [null];
+
+  productions.forEach((prod) => {
+    coords.push([prod.farmer.location.lon, prod.farmer.location.lat]);
+    demands.push(prod.volume);
+    productionIndexMap.push(prod);
+  });
+
+  // Handling Error
+  if (coords.length !== demands.length) {
+    throw new erros.InternalError("coords and demands length must be same");
+  }
+
+  let vrpResponse;
+  let routes;
+
+  try {
+    vrpResponse = await axios.post(
+      "https://localhost:8000/route-optimize/auto",
+      {
+        coords,
+        demands,
+        vehicle_capacities: vehicleCapacities,
+      }
+    );
+  } catch (err) {
+    throw new Error(`VRP service unreachable: ${err.message}`);
+  }
+
+  // Handling Error
+  if (!vrpResponse.data || !Array.isArray(vrpResponse.data.routes)) {
+    throw new Error("Invalid VRP response: routes missing");
+  }
+
+  routes = vrpResponse.data.routes;
+  // Handling Error
+  if (routes.length === 0) {
+    return {
+      success: true,
+      message: "No routes generated by VRP at this time",
+      routes: [],
+    };
+  }
+
+  console.log("Output: ", routes);
+
+  // Creating routes (Mapping)
+  for (const route of routes) {
+    const vehicleIndex = route.vehicle_id;
+
+    // Handling Error
+    if (!vehicleList[vehicleIndex]) {
+      throw new Error(`Invalid vehicle index returned: ${vehicleIndex}`);
+    }
+
+    route.vehicle_id = vehicleList[vehicleIndex].vehicle_id;
+    route.license_no = vehicleList[vehicleIndex].license_no;
+
+    let order = 1;
+    const mappedStops = route.stops.map((stop) => {
+      if (
+        typeof stop.node !== "number" ||
+        stop.node >= productionIndexMap.length
+      ) {
+        throw new Error(`Invalid stop node index: ${stop.node}`);
+      }
+      const p = productionIndexMap[stop.node] || null;
+
+      return {
+        order: order++,
+        node: stop.node,
+        production: p
+          ? {
+              _id: p._id,
+              volume: p.volume,
+              farmer: p.farmer,
+              status: p.status,
+            }
+          : null,
+        load_after_visit: stop.load_after_visit,
+      };
+    });
+
+    route.stops = mappedStops;
+  }
 
   return routes;
+}
+
+// Dispatch & save vehicle routes
+export async function dispatchRoutes(routes) {
+  if (!routes) throw new erros.BadRequestError("No routes to save");
+
+  routes.forEach((route) => {
+    route.status = "dispatched";
+    route.stops.forEach((stop) => {
+      if (stop.production !== null) {
+        stop.production.status = "awaiting pickup";
+      }
+    });
+  });
+
+  // we should update productions also
+
+  await routingRepository.saveRoutes(routes);
+}
+
+// Get all Pending Routes
+export async function getAllPendingRoutes() {
+  const pendingRoutes = await routingRepository.getAllPendingRoutes();
+  return pendingRoutes;
+}
+
+// Get a Pending Route by ID
+export async function getRouteById(route_id) {
+  const route = await routingRepository.getRouteById(route_id);
+
+  if (!route) {
+    throw new erros.NotFoundError("Route not found");
+  }
+
+  return res.status(200).json(route);
+}
+
+export async function confirmProductionPickup(route_id, production_id) {
+  const route = await routingRepository.getRouteById(route_id);
+
+  if (!route) {
+    throw new erros.NotFoundError("Route not found");
+  }
+
+  // Update production status inside route.stops
+  let found = false;
+  for (const stop of route.stops) {
+    if (stop.production._id.toString() === production_id) {
+      stop.production.status = "collected";
+      found = true;
+    }
+  }
+
+  if (!found) throw new erros.NotFoundError("Production not found in route");
+
+  const updatedProduction = await routingRepository.updateProductionState(
+    production_id,
+    "collected"
+  );
+  if (!updatedProduction)
+    throw new erros.NotFoundError("Production not found in database");
+
+  // Save the modified route
+  await routingRepository.saveRoute(route);
+
+  return;
+}
+
+export async function cancelRouteActivation(route_id) {
+  const route = await routingRepository.getRouteById(route_id);
+
+  if (!route) {
+    throw new errors.NotFoundError("Route not found");
+  }
+
+  route.status = "dispatched";
+
+  const productionIds = [];
+
+  for (const stop of route.stops) {
+    const prod = stop.production;
+
+    if (prod.status !== "pending") {
+      prod.status = "awaiting pickup";
+      productionIds.push(prod._id);
+    }
+  }
+
+  if (productionIds.length > 0) {
+    await routingRepository.bulkUpdateProductionsToAwaiting(productionIds);
+  }
+
+  await routingRepository.saveRoute(route);
+
+  return;
 }

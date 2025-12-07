@@ -1,9 +1,18 @@
 function err(err, req, res, next) {
-  console.log(err.message);
+  console.log(err);
 
-  return res.status(500).json({
+  const status = err.status || 500;
+
+  function getErrorMessage(status) {
+    if (status === 500) return "Something went wrong, please try again later";
+
+    if (status != 500)
+      return err.message || "Something went wrong, please try again later";
+  }
+
+  return res.status(status).json({
     success: false,
-    message: "Something went wrong, please try again later",
+    message: getErrorMessage(status),
   });
 }
 

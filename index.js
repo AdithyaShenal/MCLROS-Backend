@@ -5,6 +5,7 @@ import productionRoutes from "./modules/production/poduction.routes.js";
 import routing from "./modules/routing/routing.routes.js";
 import morgan from "morgan";
 import err from "./middleware/error.js";
+import cors from "cors";
 
 const app = express();
 
@@ -17,6 +18,14 @@ mongoose
 //Middlewares
 app.use(morgan("tiny"));
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Routes
 app.use("/api/farmer", farmerRoutes);
