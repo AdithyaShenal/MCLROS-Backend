@@ -4,7 +4,8 @@
   "description": "Milk Collection Logistics &amp; Route Optimization System - This our final year group project - University of Ruhuna Srilanka - Bachelors of Computer Science (BCS)",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "test": "echo \"No tests specified yet\" && exit 0"
   },
   "repository": {
     "type": "git",

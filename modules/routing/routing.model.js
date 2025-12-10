@@ -15,9 +15,13 @@ const routeSchema = new mongoose.Schema({
   distance: { type: Number, required: true, min: 0 },
   load: { type: Number, required: true, min: 0 },
   status: {
-    type: string,
+    type: String,
     enum: ["dispatched", "completed", "canceled", "inProgress"],
     default: "dispatched",
+  },
+  active: { type: Boolean, default: false },
+  driver_id: {
+    type: mongoose.Schema.Types.ObjectId,
   },
 });
 

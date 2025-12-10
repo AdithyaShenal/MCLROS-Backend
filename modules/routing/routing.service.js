@@ -45,7 +45,7 @@ export async function generateRoutesAuto() {
 
   try {
     vrpResponse = await axios.post(
-      "https://localhost:8000/route-optimize/auto",
+      "http://localhost:8000/route-optimize/auto",
       {
         coords,
         demands,
@@ -180,7 +180,7 @@ export async function generateRouteWiseAll() {
 
   try {
     vrpResponse = await axios.post(
-      "https://localhost:8000/route-optimize/route-wise/all",
+      "http://localhost:8000/route-optimize/route-wise/all",
       { requestBody }
     );
   } catch (err) {
@@ -281,7 +281,7 @@ export async function generateRouteWise(routeId) {
 
   try {
     vrpResponse = await axios.post(
-      "https://localhost:8000/route-optimize/auto",
+      "http://localhost:8000/route-optimize/auto",
       {
         coords,
         demands,
@@ -422,7 +422,7 @@ export async function cancelRouteActivation(route_id) {
   const route = await routingRepository.getRouteById(route_id);
 
   if (!route) {
-    throw new errors.NotFoundError("Route not found");
+    throw new erros.NotFoundError("Route not found");
   }
 
   route.status = "dispatched";
@@ -445,4 +445,8 @@ export async function cancelRouteActivation(route_id) {
   await routingRepository.saveRoute(route);
 
   return;
+}
+
+export async function activateRoute(driver_id, route_id) {
+  const rs = routingRepository.getRouteById(route_id);
 }

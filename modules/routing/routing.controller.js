@@ -55,3 +55,14 @@ export async function cancelRouteActivation(req, res) {
     message: "Route successfully restored",
   });
 }
+
+export async function activateRoute(req, res) {
+  const { driver_id, route_id } = req.body;
+
+  await routingService.activateRoute(driver_id, route_id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Successfully activated",
+  });
+}

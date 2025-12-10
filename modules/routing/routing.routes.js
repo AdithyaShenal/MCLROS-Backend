@@ -5,9 +5,10 @@ import {
   dispatchRoutes,
   generateRouteWise,
   getAllPendingRoutes,
-  getPendingRouteById,
+  getRouteById,
   confirmProductionPickup,
   cancelRouteActivation,
+  activateRoute,
 } from "./routing.controller.js";
 
 const router = express.Router();
@@ -35,5 +36,7 @@ router.post("/routes/confirm/:route_id/:stop_id", confirmProductionPickup);
 
 // Route cancel & Exit
 router.post("/routes/cancel/:route_id", cancelRouteActivation);
+
+router.post("/routes/activate", activateRoute);
 
 export default router;
