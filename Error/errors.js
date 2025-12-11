@@ -18,3 +18,10 @@ export class InternalError extends Error {
     this.status = 500;
   }
 }
+
+export class RouteNotFoundError extends Error {
+  constructor() {
+    super("Not Found");
+    this.status = 500;
+  }
+}

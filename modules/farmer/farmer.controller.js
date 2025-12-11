@@ -1,9 +1,13 @@
+// import { InternalError } from "../../error/errors.js";
 import * as farmerService from "./farmer.service.js";
+import { successResponse } from "../util/response.js";
 
 export async function createFarmer(req, res, next) {
+  // throw new InternalError("This is a internal error");
+
   try {
     const farmer = await farmerService.createFarmer(req.body);
-    return res.status(201).json(farmer);
+    successResponse(res, farmer, 201);
   } catch (err) {
     next(err);
   }

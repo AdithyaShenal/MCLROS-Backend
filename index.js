@@ -6,6 +6,7 @@ import routing from "./modules/routing/routing.routes.js";
 import morgan from "morgan";
 import err from "./middleware/error.js";
 import cors from "cors";
+import { RouteNotFoundError } from "./error/errors.js";
 
 const app = express();
 
@@ -31,6 +32,11 @@ app.use(
 app.use("/api/farmer", farmerRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
+
+app.all("*", () => {
+  throw new RouteNotFoundError();
+});
+
 app.use(err);
 
 const port = process.env.PORT || 4000;

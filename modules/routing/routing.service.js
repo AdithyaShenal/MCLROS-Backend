@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as routingRepository from "./routing.repository.js";
-import * as erros from "../../Error/errors.js";
+import * as erros from "../../error/errors.js";
 
 const vehicles = [
   { vehicle_id: 1, capacity: 15, license_no: "ABC 10 10", route: 1 },
