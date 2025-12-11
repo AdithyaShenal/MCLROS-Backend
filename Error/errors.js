@@ -1,27 +1,32 @@
-export class NotFoundError extends Error {
-  constructor(message) {
+export class AppError extends Error {
+  constructor(status, message, code = "ERROR", details = null) {
     super(message);
-    this.status = 404;
+    this.status = status;
+    this.code = code;
+    this.details = details;
   }
 }
 
-export class BadRequestError extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 400;
+export class BadRequestError extends AppError {
+  constructor(message = "Bad Request", details = null) {
+    super(400, message, "BAD_REQUEST", details);
   }
 }
 
-export class InternalError extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 500;
+export class NotFoundError extends AppError {
+  constructor(message = "Not Found") {
+    super(404, message, "NOT_FOUND");
   }
 }
 
-export class RouteNotFoundError extends Error {
-  constructor() {
-    super("Not Found");
-    this.status = 500;
+export class UnauthorizedError extends AppError {
+  constructor(message = "Unauthorized") {
+    super(401, message, "UNAUTHORIZED");
+  }
+}
+
+export class InternalError extends AppError {
+  constructor(message = "Internal Server Error") {
+    super(500, message, "INTERNAL_ERROR");
   }
 }

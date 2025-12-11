@@ -1,12 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import farmerRoutes from "./modules/farmer/farmer.routes.js";
 import productionRoutes from "./modules/production/poduction.routes.js";
 import routing from "./modules/routing/routing.routes.js";
 import morgan from "morgan";
 import err from "./middleware/error.js";
-import cors from "cors";
-import { RouteNotFoundError } from "./error/errors.js";
+import { NotFoundError } from "./error/errors.js";
 
 const app = express();
 
@@ -33,8 +33,8 @@ app.use("/api/farmer", farmerRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 
-app.all("*", () => {
-  throw new RouteNotFoundError();
+app.use((req, res, next) => {
+  throw new NotFoundError();
 });
 
 app.use(err);

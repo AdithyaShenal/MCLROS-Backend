@@ -1,9 +1,9 @@
-// import { InternalError } from "../../error/errors.js";
 import * as farmerService from "./farmer.service.js";
-import { successResponse } from "../util/response.js";
+import { successResponse } from "../../util/response.js";
+import { BadRequestError } from "../../error/errors.js";
 
 export async function createFarmer(req, res, next) {
-  // throw new InternalError("This is a internal error");
+  throw new BadRequestError("Provided details invalid");
 
   try {
     const farmer = await farmerService.createFarmer(req.body);
