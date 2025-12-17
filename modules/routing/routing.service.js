@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as routingRepository from "./routing.repository.js";
-import * as errors from "../../error/errors.js";
+import * as errors from "../../errors/errors.js";
 import Route from "./routing.model.js";
 
 const vehicles = [

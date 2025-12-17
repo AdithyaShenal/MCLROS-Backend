@@ -6,7 +6,7 @@ import productionRoutes from "./modules/production/poduction.routes.js";
 import routing from "./modules/routing/routing.routes.js";
 import morgan from "morgan";
 import err from "./middleware/error.js";
-import { NotFoundError } from "./error/errors.js";
+import { NotFoundError } from "./errors/errors.js";
 
 const app = express();
 
