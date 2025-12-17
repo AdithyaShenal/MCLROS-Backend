@@ -1,5 +1,5 @@
 function err(err, req, res, next) {
-  console.log(err.param);
+  console.log(err);
 
   const status = err.status || 500;
 

@@ -1,4 +1,5 @@
 import * as routingService from "./routing.service.js";
+import { successResponse } from "../../util/response.js";
 
 export async function generateRoutesAuto(req, res) {
   const routes = await routingService.generateRoutesAuto();
@@ -23,25 +24,55 @@ export async function dispatchRoutes(req, res) {
 }
 
 // Get all Pending Routes
-export async function getAllPendingRoutes(req, res) {
-  const pendingRoutes = await routingService.getAllPendingRoutes();
+export async function getPendingRoutesController(req, res) {
+  const { driver_id } = req.params;
+
+  const pendingRoutes = await routingService.getPendingRoutesService(driver_id);
   return res.status(200).json(pendingRoutes);
 }
 
-// Get a Pending Route by ID (Not implemented)
 export async function getRouteById(req, res) {
-  const pendingRoute = await routingService.getRouteById(req.params.route_id);
-  return res.status(200).json(pendingRoute);
+  const route = await routingService.getRouteById(req.params.route_id);
+  return res.status(200).json(route);
 }
 
+// Production pickup confirmation.
 export async function confirmProductionPickup(req, res) {
-  const { route_id, stop_id } = req.params;
+  const { route_id, production_id, collectedVolume, driver_id } = req.body;
 
-  await routingService.confirmProductionPickup(route_id, stop_id);
+  const result = await routingService.confirmProductionPickup(
+    route_id,
+    production_id,
+    driver_id,
+    collectedVolume
+  );
 
   return res.status(200).json({
     success: true,
-    message: "Pickup confirmed.",
+    message: result.alreadyProcessed
+      ? "Pickup already confirmed"
+      : "Pickup confirmed",
+  });
+}
+
+// Production issue report
+export async function issuePickupReport(req, res) {
+  const { route_id, production_id, driver_id, failureReason } = req.body;
+
+  console.log(req.body);
+
+  const result = await routingService.issuePickupReportService(
+    route_id,
+    production_id,
+    driver_id,
+    failureReason
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: result.alreadyProcessed
+      ? "Pickup already marked as failed"
+      : "Pickup marked as failed",
   });
 }
 
@@ -65,4 +96,28 @@ export async function activateRoute(req, res) {
     success: true,
     message: "Successfully activated",
   });
+}
+
+export async function routeCompletetionController(req, res) {
+  const route_id = req.params.route_id;
+  const { driver_id } = req.body;
+
+  console.log(req.body);
+
+  await routingService.routeCompletetionService(route_id, driver_id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Marked as completed",
+  });
+}
+
+export async function getCompletedRoutesController(req, res) {
+  const driver_id = req.params.driver_id;
+
+  console.log(driver_id);
+
+  const result = await routingService.getCompletedRoutesService(driver_id);
+
+  successResponse(res, result, 200);
 }

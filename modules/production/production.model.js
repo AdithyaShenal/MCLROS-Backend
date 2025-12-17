@@ -26,10 +26,20 @@ export const productionSchema = new mongoose.Schema(
       default: Date.now,
     },
 
+    failure_reason: {
+      type: String,
+      required: false,
+    },
+
     status: {
       type: String,
-      enum: ["pending", "awaiting pickup", "collected"],
+      enum: ["pending", "awaiting pickup", "collected", "failed"],
       default: "pending",
+    },
+
+    collectedVolume: {
+      type: Number,
+      min: 0,
     },
 
     blocked: {

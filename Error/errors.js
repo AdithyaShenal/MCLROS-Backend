@@ -30,3 +30,9 @@ export class InternalError extends AppError {
     super(500, message, "INTERNAL_ERROR");
   }
 }
+
+export class ConflictError extends AppError {
+  constructor(message = "Resources Conflict Error") {
+    super(409, message, "CONFLICT_ERROR");
+  }
+}

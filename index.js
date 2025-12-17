@@ -12,9 +12,14 @@ const app = express();
 
 // DB Connection
 mongoose
-  .connect("mongodb://localhost:27017/MCLROS_DB")
-  .then(() => console.log("Successfully connected to mongoDB."))
-  .catch((err) => console.log(err.message));
+  .connect(
+    "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
+  )
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
+  });
 
 //Middlewares
 app.use(morgan("tiny"));
@@ -34,7 +39,7 @@ app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 
 app.use((req, res, next) => {
-  throw new NotFoundError();
+  throw new NotFoundError("Invalid URL");
 });
 
 app.use(err);
