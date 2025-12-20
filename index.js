@@ -40,7 +40,7 @@ app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 
 app.use((req, res, next) => {
-  throw new NotFoundError("Invalid URL");
+  res.status(201).json("Hello this is MCLROS System");
 });
 
 app.use(err);
