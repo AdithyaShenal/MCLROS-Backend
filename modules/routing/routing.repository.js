@@ -98,3 +98,33 @@ export async function getCompletedRoutesByDriver(driver_id) {
 
   return routes;
 }
+
+export async function getDispatchedRoutes() {
+  const result = await Route.find({ status: "dispatched" });
+
+  if (!result || result.length == 0) return [];
+
+  return result;
+}
+
+export async function getInProgressRoutes() {
+  const result = await Route.find({ status: "inProgress" });
+
+  if (!result || result.length == 0) return [];
+
+  return result;
+}
+
+export async function deleteRouteRepository(route_id) {
+  const result = await Route.findByIdAndDelete(route_id);
+
+  return result;
+}
+
+export async function getCompletedAndCanceledRoutes() {
+  const result = await Route.find({
+    status: { $in: ["completed", "canceled"] },
+  });
+
+  return result;
+}

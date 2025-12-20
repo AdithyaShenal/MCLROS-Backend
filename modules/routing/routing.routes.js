@@ -12,6 +12,10 @@ import {
   issuePickupReport,
   routeCompletetionController,
   getCompletedRoutesController,
+  getDispatchedController,
+  getInProgreeController,
+  deleteRouteController,
+  getHistoryController,
 } from "./routing.controller.js";
 
 const router = express.Router();
@@ -51,5 +55,19 @@ router.post("/routes/complete/:route_id", routeCompletetionController);
 
 // Get all the completed routes of drivers
 router.get("/routes/driver/:driver_id", getCompletedRoutesController);
+
+// Routing CRUD ----------------------------------------------------
+
+// Routing (All dispatched routes)
+router.get("/dispatch", getDispatchedController);
+
+// Routing (All in progress routes)
+router.get("/in_progress", getInProgreeController);
+
+// Delete a route by id
+router.delete("/routes/:route_id", deleteRouteController);
+
+// Get all "completed" and "canceled"
+router.get("/history", getHistoryController);
 
 export default router;

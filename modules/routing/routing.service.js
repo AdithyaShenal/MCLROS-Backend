@@ -576,3 +576,31 @@ export async function getCompletedRoutesService(driver_id) {
 
   return result;
 }
+
+export async function getDispatchedService() {
+  const result = await routingRepository.getDispatchedRoutes();
+
+  return result;
+}
+
+export async function getInProgreeService() {
+  const result = await routingRepository.getInProgressRoutes();
+
+  return result;
+}
+
+export async function deleteRouteService(route_id) {
+  if (!route_id) throw errors.BadRequestError("Route ID is empty");
+
+  const result = await routingRepository.deleteRouteRepository(route_id);
+
+  if (!result) throw errors.NotFoundError("Route not found");
+
+  return;
+}
+
+export async function getHistoryService() {
+  const result = await routingRepository.getCompletedAndCanceledRoutes();
+
+  return result;
+}

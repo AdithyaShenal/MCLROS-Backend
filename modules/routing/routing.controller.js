@@ -121,3 +121,29 @@ export async function getCompletedRoutesController(req, res) {
 
   successResponse(res, result, 200);
 }
+
+export async function getDispatchedController(req, res) {
+  const result = await routingService.getDispatchedService();
+
+  successResponse(res, result, 200);
+}
+
+export async function getInProgreeController(req, res) {
+  const result = await routingService.getInProgreeService();
+
+  successResponse(res, result, 200);
+}
+
+export async function deleteRouteController(req, res) {
+  const route_id = req.params.route_id;
+
+  await routingService.deleteRouteService(route_id);
+
+  successResponse(res, "Successfully deleted", 200);
+}
+
+export async function getHistoryController(req, res) {
+  const result = await routingService.getHistoryService();
+
+  successResponse(res, result, 200);
+}
