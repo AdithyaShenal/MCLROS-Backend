@@ -25,3 +25,5 @@ export async function findTruckById(id) {
 export async function findTruckByRoute(route) {
  return await Fleet.find({ route});
 }
+
+//toggle truck availability 
