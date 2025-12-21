@@ -6,6 +6,7 @@ export const fleetSchema = new mangoose.Schema(
       type: String,
       match: /^[A-Z]{2}\s?[A-Z]{2,3}-\d{3,4}$/, //acording to schema given
       required: true,
+      unique: true,
     },
     max_capacity: {
       type: Number,
