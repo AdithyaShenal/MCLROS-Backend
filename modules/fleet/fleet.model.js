@@ -33,8 +33,7 @@ export const fleetSchema = new mangoose.Schema(
     route: {
       type: Number,
       required: true,
-      min: 1,
-      max: 6,
+      enum: [1, 2, 3, 4, 5, 6],
     },
   },
   {
