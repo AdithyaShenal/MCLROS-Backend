@@ -18,7 +18,7 @@ export async function update(id, data) {
   })
 }
 
-export async function deleteTruck(id) {
+export async function delete_Truck(id){
   return await Fleet.findByIdAndDelete(id)
 }
 
