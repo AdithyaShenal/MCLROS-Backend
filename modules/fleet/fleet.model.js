@@ -4,7 +4,7 @@ export const fleetSchema = new mangoose.Schema(
   {
     plate_no: {
       type: String,
-      match: /^[A-Z]{2}\s?[A-Z]{2,3}-\d{3,4}$/, //acording to schema given
+     // match: /^[A-Z]{2}\s?[A-Z]{2,3}-\d{3,4}$/, //acording to schema given
       required: true,
       unique: true,
     },
