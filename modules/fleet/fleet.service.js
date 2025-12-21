@@ -3,7 +3,9 @@ import * as errors from "../../errors/errors.js";
 
 export async function getfleet() {
  const trucks = await fleetRepository.findAll();
- if(!trucks) throw errors.NotFoundError("Trucks not found");
+ if (!trucks || trucks.length === 0)
+  //cuz sometimes trucks is null
+   throw errors.NotFoundError('Trucks not found')
  return trucks;
  }
 
@@ -32,10 +34,16 @@ export async function getTruckById(id) {
   return truck;}
 
   export async function getFleetByRoute(route_id) {
-    const fleet = await fleetRepository.findTruckByRoute(route_id);
-    if(!fleet) throw errors.NotFoundError("Fleet not found");
-    return fleet;
+    const trucks = await fleetRepository.findTruckByRoute(route_id);
+    if (!trucks || trucks.length === 0)
+      throw errors.NotFoundError('Fleet not found')
+    return trucks;
   }
 
+  export async function findTruckByPlateNo(plate_no) {
+    const truck = await fleetRepository.findTruckByPlateNo(plate_no);
+    if(!truck) throw errors.NotFoundError("Truck not found");
+    return truck;
+  }
 
 

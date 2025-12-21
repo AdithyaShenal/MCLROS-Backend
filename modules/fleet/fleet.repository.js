@@ -31,3 +31,6 @@ export async function findTruckByRoute(route) {
 }
 
 //toggle truck availability
+export async function toggleStatus(data) {
+  return await Fleet.findByIdAndUpdate(data.id, { $set: { status: data.status } }, { new: true })
+}
