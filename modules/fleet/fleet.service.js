@@ -14,4 +14,8 @@ export async function getAllTrucks() {
  
 }
 
+export async function updateTruck(id, data) {
+  return await fleetRepository.updateTruck(id, data);
+}
+
 

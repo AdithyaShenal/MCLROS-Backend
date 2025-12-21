@@ -11,7 +11,7 @@ export async function create(data) {
   return await fleet.save()
 }
 
-export async function updateTruck(id, data) {
+export async function update(id, data) {
   return await Fleet.findByIdAndUpdate(id, data, {
     new: true,
     //tells us to return the updated document
