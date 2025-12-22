@@ -37,7 +37,7 @@ app.use(
 
 // Routes
 app.use("/api/farmer", farmerRoutes);
-app.use("/api/fleet", fleetRoutes);
+app.use("/api/trucks", fleetRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 

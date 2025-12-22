@@ -35,12 +35,12 @@ router.get(
 )
 
 router.get(
-  'route/:route',
+  '/:route',
   validate(fleetValidator.routeTruckSchema),
   fleetController.getTrucksByRoute
 )
 router.post(
-  'status/',validate(fleetValidator.toggleStatusSchema),
+  '/status/',validate(fleetValidator.toggleStatusSchema),
   fleetController.toggleTruckStatus
 )
 export default router
