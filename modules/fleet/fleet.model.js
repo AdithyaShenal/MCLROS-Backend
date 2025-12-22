@@ -5,6 +5,7 @@ export const fleetSchema = new mangoose.Schema(
     plate_no: {
       type: String,
       required: true,
+      unique: true,
     },
     max_capacity: {
       type: Number,

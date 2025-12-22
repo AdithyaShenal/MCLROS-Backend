@@ -5,6 +5,7 @@ export const driverSchema = new mongoose.Schema({
  name: {
   type: String,
   required: true,
+  unique: true,
  },
  phone: {
   type: String,
@@ -22,3 +23,6 @@ export const driverSchema = new mongoose.Schema({
   //validation should be here
  },
 });
+
+const Driver = mongoose.model("Driver", driverSchema);
+export default Driver;
