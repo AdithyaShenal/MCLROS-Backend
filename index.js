@@ -12,7 +12,7 @@ import { NotFoundError } from "./errors/errors.js";
 const app = express();
 
 // DB Connection
- mongoose
+mongoose
   .connect(
      //"mongodb://localhost:27017/MCLROS_DB"
     "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
