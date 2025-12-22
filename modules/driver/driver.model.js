@@ -1,12 +1,11 @@
 
-import { uniq } from "lodash";
+
 import mongoose from "mongoose";
 
 export const driverSchema = new mongoose.Schema({
  name: {
   type: String,
   required: true,
-  unique: true,
  },
  phone: {
   type: String,

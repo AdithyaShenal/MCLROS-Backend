@@ -24,12 +24,12 @@ export const fleetRouteSchema = joi.object({
 
 export const updateTruckSchema = joi.object({
   plate_no: joi.string().required(),
-  max_capacity: joi.number().min(0).max(2500).required(),
-  depot_location: joi.string().required(),
-  status: joi.string().valid("available", "unavailable", "inService").required(),
-  model: joi.string().required(),
-  distance_travelled: joi.string().required(),
-  route:joi.number().valid(1,2,3,4,5,6).required(),
+  max_capacity: joi.number().min(0).max(2500),
+  depot_location: joi.string(),
+  status: joi.string().valid("available", "unavailable", "inService"),
+  model: joi.string(),
+  distance_travelled: joi.string(),
+  route:joi.number().valid(1,2,3,4,5,6),
 });
 
 export const deleteTruckSchema = joi.object({
@@ -40,26 +40,22 @@ export const deleteTruckSchema = joi.object({
 
 export const statusTruckSchema = joi.object({
   body: joi.object({
+    plate_no: joi.string().required(),
     status: joi.string().valid("available", "unavailable", "inService").required(),
   }),
 });
 
-export const get_delete_TruckSchema = joi.object({
-  params: joi.object({
-    id: joi.string().required(),
-  
-}),
-});
+
 
 export const postTruckSchema = joi.object({
   body: joi.object({
     plate_no: joi.string().required(),
-    max_capacity: joi.number().min(0).max(2500).required(),
-    depot_location: joi.string().required(),
-    status: joi.string().valid("available", "unavailable", "inService").required(),
+    max_capacity: joi.number().min(0).max(2500),
+    depot_location: joi.string(),
+    status: joi.string().valid("available", "unavailable", "inService"),
     model: joi.string().required(),
-    distance_travelled: joi.string().required(),
-    route:joi.number().valid(1,2,3,4,5,6).required(),
+    distance_travelled: joi.string(),
+    route:joi.number().valid(1,2,3,4,5,6),
   }),
 });
 

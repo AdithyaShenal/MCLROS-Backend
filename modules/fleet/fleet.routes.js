@@ -24,13 +24,13 @@ router.put(
 
 router.delete(
   '/:id',
-  validate(fleetValidator.get_delete_TruckSchema),
+  validate(fleetValidator.truckIdSchema),
   fleetController.deleteTruck
 )
 
 router.get(
   '/:id',
-  validate(fleetValidator.get_delete_TruckSchema),
+  validate(fleetValidator.truckIdSchema),
   fleetController.getTruckById
 )
 
