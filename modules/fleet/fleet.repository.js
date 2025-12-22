@@ -4,7 +4,7 @@ export async function findAll() {
   return await Fleet.find()
 }
 export async function findTruckByPlateNo(data) {
- return await Fleet.find(data.plate_no)
+ return await Fleet.find({plate_no: data.plate_no})
 }
 export async function create(data) {
   const fleet = new Fleet(data)
@@ -32,5 +32,12 @@ export async function findTruckByRoute(route) {
 
 //toggle truck availability
 export async function toggleStatus(data) {
-  return await Fleet.findByIdAndUpdate(data.id, { $set: { status: data.status } }, { new: true })
+  return await Fleet.findOneAndUpdate({
+    plate_no: data.plate_no
+  }, {
+    $set: {status: data.status
+      //set used to update only the specific field
+  }}, {
+    new: true
+  })
 }

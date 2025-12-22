@@ -55,3 +55,12 @@ export async function getTrucksByRoute(req, res, next) {
     next(err)
   }
 }
+
+export async function toggleTruckStatus(req, res, next) {
+  try {
+    const truck = await fleetService.toggleTruckStatus(req.body)
+    return res.json(truck)
+  } catch (err) {
+    next(err)
+  }
+}
