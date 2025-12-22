@@ -35,7 +35,7 @@ router.get(
 )
 
 router.get(
-  '/:route',
+  'routes/:route',
   validate(fleetValidator.routeTruckSchema),
   fleetController.getTrucksByRoute
 )
