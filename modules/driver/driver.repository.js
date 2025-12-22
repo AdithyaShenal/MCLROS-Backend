@@ -21,13 +21,10 @@ export async function findDriverById(id){
  return await Driver.findById(id);
 }
 
-export async function toggleStatus(data) {
-  return await Driver.findOneAndUpdate({
-    license_no: data.license_no
-  }, {
-    $set: {status: data.status
-      //set used to update only the specific field
-  }}, {
+export async function toggleStatus(license_no, status) {
+  return await Driver.findOneAndUpdate(
+    license_no, {
+    $set:status}, {
     new: true
   })
 }
