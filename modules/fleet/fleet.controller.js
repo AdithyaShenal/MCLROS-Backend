@@ -12,7 +12,7 @@ export async function createTruck(req, res, next) {
 
 export async function getAllTrucks(req, res, next) {
   try {
-    const trucks = await fleetService.getAllTrucks()
+    const trucks = await fleetService.getfleet()
     return res.json(trucks)
   } catch (err) {
     next(err)
