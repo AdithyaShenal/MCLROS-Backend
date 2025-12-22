@@ -7,7 +7,6 @@ const router = express.Router()
 
 router.get(
   '/',
-  validate(fleetValidator.createTruckSchema),
   fleetController.getAllTrucks
 )
 
@@ -35,4 +34,10 @@ router.get(
   fleetController.getTruckById
 )
 
-router.get('/:route',validate(fleetValidator.routeTruckSchema),fleetController.getTruckByRoute)
+router.get(
+  '/:route',
+  validate(fleetValidator.routeTruckSchema),
+  fleetController.getTrucksByRoute
+)
+
+export default router
