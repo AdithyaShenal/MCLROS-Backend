@@ -69,6 +69,13 @@ export const routeTruckSchema = joi.object({
   }),
 });
 
+export const toggleStatusSchema = joi.object({
+  body: joi.object({
+    plate_no: joi.string().required(),
+    status: joi.string().valid("available", "unavailable", "inService").required(),
+  }),
+});
+
 export default (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body)
   if (error) return res.status(400).json({ error: error.details[0].message })

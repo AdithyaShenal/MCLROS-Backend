@@ -40,6 +40,7 @@ router.get(
   fleetController.getTrucksByRoute
 )
 router.post(
-  '/'
+  'status/',validate(fleetValidator.toggleStatusSchema),
+  fleetController.toggleTruckStatus
 )
 export default router
