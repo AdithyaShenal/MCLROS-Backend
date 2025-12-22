@@ -32,3 +32,7 @@ export async function toggleStatus(data) {
   })
 }
 
+export async function findDriverByLicenseNo(license_no) {
+  return await Driver.findOne({license_no});
+}
+

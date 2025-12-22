@@ -46,9 +46,9 @@ export async function getTruckById(id) {
     return truck;
   }
 
-  export async function toggleTruckStatus(data) {
-    const truck = await fleetRepository.findTruckByPlateNo(data.plate_no);
+  export async function toggleTruckStatus(plate_no,status) {
+    const truck = await fleetRepository.findTruckByPlateNo(plate_no);
     if(!truck) throw errors.NotFoundError("Truck not found");
-    return await fleetRepository.toggleStatus(data);
+    return await fleetRepository.toggleStatus(plate_no,status);
   }
 

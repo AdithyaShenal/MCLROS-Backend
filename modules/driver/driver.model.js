@@ -1,4 +1,5 @@
 
+import { uniq } from "lodash";
 import mongoose from "mongoose";
 
 export const driverSchema = new mongoose.Schema({
@@ -21,6 +22,7 @@ export const driverSchema = new mongoose.Schema({
   type: String,
   required: true,
   //validation should be here
+  unique: true,
  },
 });
 

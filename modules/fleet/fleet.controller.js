@@ -58,7 +58,7 @@ export async function getTrucksByRoute(req, res, next) {
 
 export async function toggleTruckStatus(req, res, next) {
   try {
-    const truck = await fleetService.toggleTruckStatus(req.body)
+    const truck = await fleetService.toggleTruckStatus(req.body.plate_no, req.body.status)
     return res.json(truck)
   } catch (err) {
     next(err)
