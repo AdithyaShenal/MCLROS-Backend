@@ -28,6 +28,7 @@ export const productionSchema = new mongoose.Schema(
 
     failure_reason: {
       type: String,
+      default: "-",
       required: false,
     },
 
@@ -39,6 +40,7 @@ export const productionSchema = new mongoose.Schema(
 
     collectedVolume: {
       type: Number,
+      default: 0,
       min: 0,
     },
 

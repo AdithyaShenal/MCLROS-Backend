@@ -56,7 +56,26 @@ export async function updateProductionState(production_id, status) {
 export async function bulkUpdateProductionsToAwaiting(productionIds) {
   return await Production.updateMany(
     { _id: { $in: productionIds } },
-    { status: "awaiting pickup" }
+    {
+      $set: {
+        status: "awaiting pickup",
+        failure_reason: "-",
+        collectedVolume: 0,
+      },
+    }
+  );
+}
+
+export async function bulkUpdateProductionToPending(productionIds) {
+  return await Production.updateMany(
+    { _id: { $in: productionIds } },
+    {
+      $set: {
+        status: "pending",
+        failure_reason: "-",
+        collectedVolume: 0,
+      },
+    }
   );
 }
 
