@@ -10,7 +10,7 @@ import mongoose from "mongoose";
  phone: {
   type: String,
   match: /^\d{10}$/,
-  required: true,
+  
  },
  status: {
   type: String,

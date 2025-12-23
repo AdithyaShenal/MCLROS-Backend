@@ -1,13 +1,13 @@
 import express from "express";
 import * as driverController from "./driver.controller.js";
 import * as driverValidator from "./driver.validator.js";
-import validate from '../middleware/validate.js'
+
 
 const router = express.Router();
 
 router.post(
  "/",
- validate(driverValidator.createDriverSchema),
+ driverValidator.bodyValidator(driverValidator.createDriverSchema),
  driverController.createDriver
 );
 
@@ -15,25 +15,25 @@ router.get('/', driverController.findDrivers)
 
 router.get(
   "/:id",
-  validate(driverValidator.driverIdSchema),
+  driverValidator.paramsValidator(driverValidator.driverIdSchema),
   driverController.getDriverById
 );
 
 router.put(
   "/",
-  validate(driverValidator.updateDriverSchema),
+  driverValidator.bodyValidator(driverValidator.updateDriverSchema),
   driverController.updateDriver
 );
 
-router.put(
+router.patch(
   "/status/",
-  validate(driverValidator.toggleStatusSchema),
+  driverValidator.bodyValidator(driverValidator.toggleStatusSchema),
   driverController.toggleDriverStatus
 );
 
 router.delete(
   "/:id",
-  validate(driverValidator.driverIdSchema),
+  driverValidator.paramsValidator(driverValidator.driverIdSchema),
   driverController.deleteDriver
 );
 

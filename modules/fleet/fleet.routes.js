@@ -1,7 +1,7 @@
 import express from 'express'
 import * as fleetController from './fleet.controller.js'
 import * as fleetValidator from './fleet.validator.js'
-import validate from '../middleware/validate.js'
+
 
 const router = express.Router()
 
