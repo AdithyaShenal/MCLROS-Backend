@@ -1,36 +1,40 @@
-import Fleet from './fleet.model.js'
+import Trucks from './fleet.model.js'
 
 export async function findAll() {
-  return await Fleet.find()
+  return await Trucks.find()
 }
 export async function findTruckByPlateNo(plate_no) {
- return await Fleet.find({plate_no})
+  return await Trucks.findOne({ plate_no })
 }
 export async function create(data) {
-  const fleet = new Fleet(data)
-  return await fleet.save()
+  const truck = new Trucks(data)
+  return await truck.save()
 }
 
 export async function update(id, data) {
-  return await Fleet.findByIdAndUpdate(id, data, {
+  return await Trucks.findByIdAndUpdate(id, data, {
     new: true,
     //tells us to return the updated document
   })
 }
 
-export async function delete_Truck(id){
-  return await Fleet.findByIdAndDelete(id)
+export async function delete_Truck(id) {
+  return await Trucks.findByIdAndDelete(id)
 }
 
 export async function findTruckById(id) {
-  return await Fleet.findById(id)
+  return await Trucks.findById(id)
 }
 
-export async function findTruckByRoute(route) {
-  return await Fleet.find({ route })
+export async function findTrucksByRoute(route) {
+  return await Trucks.find({ route })
 }
 
 //toggle truck availability
 export async function toggleStatus(plate_no, status) {
-  return await Fleet.findOneAndUpdate(plate_no, { $set: { status } }, { new: true })
+  return await Trucks.findOneAndUpdate(
+    { plate_no },
+    { $set: { status } },
+    { new: true }
+  )
 }

@@ -5,13 +5,13 @@ export async function getfleet() {
  const trucks = await fleetRepository.findAll();
  if (!trucks || trucks.length === 0)
   //cuz sometimes trucks is null
-   throw errors.NotFoundError('Trucks not found')
+   throw new errors.NotFoundError('Trucks not found')
  return trucks;
  }
 
  export async function createTruck(data) {
   const truck= await fleetRepository.findTruckByPlateNo(data.plate_no);
-  if(truck) throw errors.BadRequestError("Truck already exists");
+  if(truck){throw new errors.BadRequestError('Truck already exists')} 
   return await fleetRepository.create(data);
  
 }
@@ -33,11 +33,12 @@ export async function getTruckById(id) {
   if(!truck) throw errors.NotFoundError("Truck not found");
   return truck;}
 
-  export async function getFleetByRoute(route_id) {
-    const trucks = await fleetRepository.findTruckByRoute(route_id);
-    if (!trucks || trucks.length === 0)
-      throw errors.NotFoundError('Fleet not found')
-    return trucks;
+  export async function getTrucksByRoute(route) {
+    const trucks = await fleetRepository.findTrucksByRoute(route)
+    if (!trucks || trucks.length === 0) {
+      throw new errors.NotFoundError('Fleet not found')
+    }
+    return trucks
   }
 
   export async function findTruckByPlateNo(plate_no) {
@@ -51,4 +52,3 @@ export async function getTruckById(id) {
     if(!truck) throw errors.NotFoundError("Truck not found");
     return await fleetRepository.toggleStatus(plate_no,status);
   }
-
