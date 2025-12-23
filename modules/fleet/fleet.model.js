@@ -1,6 +1,6 @@
 import mangoose, { model } from 'mongoose'
 
-export const fleetSchema = new mangoose.Schema(
+ const fleetSchema = new mangoose.Schema(
   {
     plate_no: {
       type: String,
