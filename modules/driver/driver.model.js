@@ -11,10 +11,10 @@ const driverSchema = new mongoose.Schema({
   },
   status: {
     type: String, // remove inService
-    enum: ["available", "unavailable", "inService", "onDuty"],
-    default: "unavailable", // available
+    enum: ["available", "unavailable", "onDuty"],
+    default: "available", // available
   },
-  license_no: {
+  driver_license_no: {
     type: String,
     required: true,
     //validation should be here

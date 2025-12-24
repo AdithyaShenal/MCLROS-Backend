@@ -8,19 +8,19 @@ export const driverIdSchema = joi.object({
 export const createDriverSchema = joi.object({
  name: joi.string().required(),
  phone: joi.string().pattern(/^\d{10}$/),
- license_no: joi.string().required(),
+ driver_license_no: joi.string().required(),
  status: joi.string().valid("available", "unavailable", "inService","onDuty"),
 });
 
 export const updateDriverSchema = joi.object({
  name: joi.string(),
  phone: joi.string().pattern(/^\d{10}$/),
- license_no: joi.string().required(),
+ driver_license_no: joi.string().required(),
  status: joi.string().valid("available", "unavailable", "inService","onDuty"),
 });
 
 export const toggleStatusSchema = joi.object({
-  license_no: joi.string().required(),
+  driver_license_no: joi.string().required(),
   status: joi.string().valid("available", "unavailable", "inService","onDuty").required(),
  
 });

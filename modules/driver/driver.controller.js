@@ -22,7 +22,7 @@ export async function findDrivers(req, res, next) {
 
 export async function updateDriver(req, res, next) {
  try {
-  const {id} = await driverService.getDriverByLicenseNo(req.body.license_no);
+  const {id} = await driverService.getDriverByLicenseNo(req.body.driver_license_no);
   const driver = await driverService.updateDriver(id, req.body);
   return res.json(driver);
  } catch (err) {
@@ -50,7 +50,7 @@ export async function deleteDriver(req, res, next) {
 
 export async function toggleDriverStatus(req, res, next) {
  try {
-  const driver = await driverService.toggleDriverStatus(req.body.license_no, req.body.status);
+  const driver = await driverService.toggleDriverStatus(req.body.driver_license_no, req.body.status);
   return res.json(driver);
  } catch (err) {
   next(err);

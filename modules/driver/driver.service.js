@@ -7,7 +7,7 @@ export async function findAll(){
  return drivers;
 }
 export async function createDriver(data) {
- const driver = await driverRepository.findDriverByLicenseNo(data.license_no); //check if driver already exists()
+ const driver = await driverRepository.findDriverByLicenseNo(data.driver_license_no); //check if driver already exists()
  if(driver) throw new errors.BadRequestError("Driver already exists");
  return await driverRepository.create(data);
 }
@@ -30,14 +30,14 @@ export async function getDriverById(id) {
  return driver;
 }
 
-export async function getDriverByLicenseNo(license_no) {
- const driver = await driverRepository.findDriverByLicenseNo(license_no);
+export async function getDriverByLicenseNo(driver_license_no) {
+ const driver = await driverRepository.findDriverByLicenseNo(driverlicense_no);
  if(!driver) throw new errors.NotFoundError("Driver not found");
  return driver;
 }
 
-export async function toggleDriverStatus(license_no, status) {
- const driver = await driverRepository.findDriverByLicenseNo(license_no);
+export async function toggleDriverStatus(driver_license_no, status) {
+ const driver = await driverRepository.findDriverByLicenseNo(driver_license_no);
  if(!driver) throw new  errors.NotFoundError("Driver not found");
- return await driverRepository.toggleStatus(license_no, status);
+ return await driverRepository.toggleStatus(driver_license_no, status);
 }
