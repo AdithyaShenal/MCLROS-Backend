@@ -12,9 +12,6 @@ const fleetSchema = new mongoose.Schema(
       max: 2500,
       min: 0,
     },
-    depot_location: {
-      type: String,
-    },
     status: {
       type: String,
       enum: ['available', 'unavailable', 'inService'],
