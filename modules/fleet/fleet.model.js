@@ -34,8 +34,8 @@ const fleetSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-)
+);
 
-export const Trucks = model('Trucks', fleetSchema)
+export const Trucks = model("Trucks", fleetSchema);
 
-export default Trucks
+export default Trucks;
