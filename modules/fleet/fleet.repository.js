@@ -3,7 +3,7 @@ import Trucks from './fleet.model.js'
 export async function findAll() {
   return await Trucks.find()
 }
-export async function findTruckByPlateNo(license_no) {
+export async function findTruckByLicenseNo(license_no) {
   return await Trucks.findOne({ license_no })
 }
 export async function create(data) {

@@ -30,7 +30,7 @@ export async function getTruckById(req, res, next) {
 
 export async function updateTruck(req, res, next) {
   try {
-    const { id } = await fleetService.findTruckByPlateNo(req.body.license_no)
+    const { id } = await fleetService.findTruckByLicenseNo(req.body.license_no)
     const truck = await fleetService.updateTruck(id, req.body)
     return res.json(truck)
   } catch (err) {
