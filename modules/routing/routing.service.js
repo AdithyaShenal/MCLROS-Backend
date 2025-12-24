@@ -485,7 +485,8 @@ export async function confirmProductionPickup(
 
   await routingRepository.saveRoute(route);
 
-  // We should update production status along
+  // update production - synchronously
+  await routingRepository.updateProductionState(production_id, "collected");
 
   return {
     alreadyProcessed: false,
@@ -525,6 +526,9 @@ export async function issuePickupReportService(
   stop.production.failure_reason = failureReason;
 
   await routingRepository.saveRoute(route);
+
+  // update production - synchronously
+  await routingRepository.updateProductionState(production_id, "failed");
 
   return {
     alreadyProcessed: false,
