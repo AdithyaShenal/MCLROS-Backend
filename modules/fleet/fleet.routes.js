@@ -1,43 +1,48 @@
 import express from 'express'
 import * as fleetController from './fleet.controller.js'
 import * as fleetValidator from './fleet.validator.js'
-import validate from '../middleware/validate.js'
+
 
 const router = express.Router()
 
 router.get(
   '/',
+  //(req, res) => res.status(200).json({ message: 'Truck created successfully' })
   fleetController.getAllTrucks
 )
 
 router.post(
   '/',
-  validate(fleetValidator.postTruckSchema),
+  fleetValidator.validateBody(fleetValidator.createTruckSchema),
   fleetController.createTruck
 )
 
 router.put(
   '/',
-  validate(fleetValidator.updateTruckSchema),
+  fleetValidator.validateBody(fleetValidator.updateTruckSchema),
   fleetController.updateTruck
 )
 
 router.delete(
   '/:id',
-  validate(fleetValidator.get_delete_TruckSchema),
+  fleetValidator.validateParams(fleetValidator.truckIdSchema),
   fleetController.deleteTruck
 )
 
 router.get(
   '/:id',
-  validate(fleetValidator.get_delete_TruckSchema),
+  fleetValidator.validateParams(fleetValidator.truckIdSchema),
   fleetController.getTruckById
 )
 
 router.get(
-  '/:route',
-  validate(fleetValidator.routeTruckSchema),
+  '/routes/:route',
+  fleetValidator.validateParams(fleetValidator.fleetRouteSchema),
   fleetController.getTrucksByRoute
 )
-
+router.patch(
+  '/status',
+  fleetValidator.validateBody(fleetValidator.toggleStatusSchema),
+  fleetController.toggleTruckStatus
+)
 export default router

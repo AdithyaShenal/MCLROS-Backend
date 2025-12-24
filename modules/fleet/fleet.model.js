@@ -1,20 +1,19 @@
-import mangoose, { model } from 'mongoose'
+import mongoose, { model } from 'mongoose'
 
-export const fleetSchema = new mangoose.Schema(
+const fleetSchema = new mongoose.Schema(
   {
     plate_no: {
       type: String,
       required: true,
+      unique: true,
     },
     max_capacity: {
       type: Number,
       max: 2500,
       min: 0,
-      required: true,
     },
     depot_location: {
       type: String,
-      required: true,
     },
     status: {
       type: String,
@@ -27,13 +26,11 @@ export const fleetSchema = new mangoose.Schema(
     },
     distance_travelled: {
       type: String,
-      required: true,
     },
     route: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 6,
+      type: String,
+
+      enum: ['1', '2', '3', '4', '5', '6'],
     },
   },
   {
@@ -41,6 +38,6 @@ export const fleetSchema = new mangoose.Schema(
   }
 )
 
-export const Fleet = model('Fleet', fleetSchema)
+export const Trucks = model('Trucks', fleetSchema)
 
-export default Fleet
+export default Trucks
