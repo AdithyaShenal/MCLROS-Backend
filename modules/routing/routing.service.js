@@ -485,6 +485,8 @@ export async function confirmProductionPickup(
 
   await routingRepository.saveRoute(route);
 
+  // We should update production status along
+
   return {
     alreadyProcessed: false,
   };
