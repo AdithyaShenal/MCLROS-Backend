@@ -7,14 +7,14 @@ export async function getConfig() {
  return config;
 }
 
-export async function createConfig(data) {
- const config = await configRepository.getByDeportLocation(data.deport_location);
- if (config) throw new errors.BadRequestError("Deport location already exists");
- return await configRepository.create(data);
+export async function updateNotification(deport_location,notification_template) {
+ const config = await configRepository.getByDeportLocation(deport_location);
+ if (!config) throw new errors.BadRequestError("deport not found");
+ return await configRepository.updateTemplate(deport_location,notification_template);
 }
 
-export async function updateConfigVolume(data) {
- const config = await configRepository.getByDeportLocation(data.deport_location);
+export async function updateLat_Fat_Table(deport_location,lat_fat_table) {
+ const config = await configRepository.getByDeportLocation(deport_location);
  if (!config) throw new errors.NotFoundError("Deport not found");
  return await configRepository.updateTemplate(data.deport_location, data.volume);
 }
