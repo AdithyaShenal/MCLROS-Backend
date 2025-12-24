@@ -9,8 +9,22 @@ export async function create(data) {
  return await config.save();
 }
 
-export async function update(deport_location, data) {
- return await Config.findOneAndUpdate({deport_location}, data, {
-  new: true,
- });
+export async function updateTemplate(deport_location, volume) {
+ return await Config.findOneAndUpdate({deport_location}, {$set:{"notification_template.volume":{volume}} 
+ },{new: true},
+ );
+}
+
+export async function updateTemplate(deport_location, lat_fat_table) {
+  return await Config.findOneAndUpdate(
+    { deport_location },
+    { $set: { lat_fat_table } },
+    {
+      new: true,
+    }
+  )
+}
+
+export async function getByDeportLocation(deport_location) {
+ return await Config.findOne({ deport_location });
 }
