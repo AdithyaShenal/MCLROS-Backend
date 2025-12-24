@@ -1,39 +1,41 @@
 import * as routingService from "./routing.service.js";
 import { successResponse } from "../../util/response.js";
 
+// No validations need
 export async function generateRoutesAuto(req, res) {
   const routes = await routingService.generateRoutesAuto();
   return res.status(200).json(routes);
 }
 
+// No validations need
 export async function generateRouteWiseAll(req, res) {
   const routes = await routingService.generateRouteWiseAll();
   return res.status(200).json(routes);
 }
 
+// Params validation done.
 export async function generateRouteWise(req, res) {
   const routes = await routingService.generateRouteWise(req.params.route_id);
   return res.status(200).json(routes);
 }
 
+// Body validation done.
 export async function dispatchRoutes(req, res) {
-  const routes = await routingService.dispatchRoutes(req.body);
-  return res
-    .status(201)
-    .json({ success: true, message: "Successfully dispatched." });
+  await routingService.dispatchRoutes(req.body);
+  successResponse(res, "Successfully dispatched", 201);
+}
+
+// Get route by ID
+export async function getRouteById(req, res) {
+  const route = await routingService.getRouteById(req.params.route_id);
+  return res.status(200).json(route);
 }
 
 // Get all Pending Routes
 export async function getPendingRoutesController(req, res) {
   const { driver_id } = req.params;
-
   const pendingRoutes = await routingService.getPendingRoutesService(driver_id);
   return res.status(200).json(pendingRoutes);
-}
-
-export async function getRouteById(req, res) {
-  const route = await routingService.getRouteById(req.params.route_id);
-  return res.status(200).json(route);
 }
 
 // Production pickup confirmation.
@@ -87,6 +89,7 @@ export async function cancelRouteActivation(req, res) {
   });
 }
 
+// This should be changed to route_id -> params. after JWT implemented
 export async function activateRoute(req, res) {
   const { driver_id, route_id } = req.body;
 
@@ -98,11 +101,10 @@ export async function activateRoute(req, res) {
   });
 }
 
+// This must be change with JWT
 export async function routeCompletetionController(req, res) {
   const route_id = req.params.route_id;
   const { driver_id } = req.body;
-
-  console.log(req.body);
 
   await routingService.routeCompletetionService(route_id, driver_id);
 
@@ -112,13 +114,10 @@ export async function routeCompletetionController(req, res) {
   });
 }
 
+// This must be change with JWT
 export async function getCompletedRoutesController(req, res) {
   const driver_id = req.params.driver_id;
-
-  console.log(driver_id);
-
   const result = await routingService.getCompletedRoutesService(driver_id);
-
   successResponse(res, result, 200);
 }
 
@@ -128,7 +127,7 @@ export async function getDispatchedController(req, res) {
   successResponse(res, result, 200);
 }
 
-export async function getInProgreeController(req, res) {
+export async function getInProgressController(req, res) {
   const result = await routingService.getInProgreeService();
 
   successResponse(res, result, 200);
