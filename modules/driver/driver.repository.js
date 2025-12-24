@@ -21,15 +21,15 @@ export async function findDriverById(id){
  return await Driver.findById(id);
 }
 
-export async function toggleStatus(license_no, status) {
+export async function toggleStatus(driver_license_no, status) {
   return await Driver.findOneAndUpdate(
-    {license_no}, {
+    {driver_license_no}, {
     $set:{status}}, {
     new: true
   })
 }
 
-export async function findDriverByLicenseNo(license_no) {
-  return await Driver.findOne({license_no});
+export async function findDriverByLicenseNo(driver_license_no) {
+  return await Driver.findOne({driver_license_no});
 }
 
