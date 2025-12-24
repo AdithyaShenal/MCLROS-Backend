@@ -30,7 +30,7 @@ export async function getTruckById(req, res, next) {
 
 export async function updateTruck(req, res, next) {
   try {
-    const { id } = await fleetService.findTruckByPlateNo(req.body.plate_no)
+    const { id } = await fleetService.findTruckByPlateNo(req.body.license_no)
     const truck = await fleetService.updateTruck(id, req.body)
     return res.json(truck)
   } catch (err) {
@@ -57,10 +57,11 @@ export async function getTrucksByRoute(req, res, next) {
   }
 }
 
+
 export async function toggleTruckStatus(req, res, next) {
   try {
     console.log(req.body)
-    const truck = await fleetService.toggleTruckStatus(req.body.plate_no, req.body.status)
+    const truck = await fleetService.toggleTruckStatus(req.body.license_no, req.body.status)
     return res.json(truck)
   } catch (err) {
     next(err)

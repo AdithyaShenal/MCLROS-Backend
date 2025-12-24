@@ -3,7 +3,7 @@ import * as errors from "../../errors/errors.js";
 
 export async function getConfig() {
  const config = await configRepository.findAll();
- if (!config) throw new  errors.NotFoundError("Data not found");
+ if (!config || config.length === 0) throw new  errors.NotFoundError("Data not found");
  return config;
 }
 

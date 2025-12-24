@@ -3,8 +3,8 @@ import Trucks from './fleet.model.js'
 export async function findAll() {
   return await Trucks.find()
 }
-export async function findTruckByPlateNo(plate_no) {
-  return await Trucks.findOne({ plate_no })
+export async function findTruckByPlateNo(license_no) {
+  return await Trucks.findOne({ license_no })
 }
 export async function create(data) {
   const truck = new Trucks(data)
@@ -31,9 +31,9 @@ export async function findTrucksByRoute(route) {
 }
 
 //toggle truck availability
-export async function toggleStatus(plate_no, status) {
+export async function toggleStatus(license_no, status) {
   return await Trucks.findOneAndUpdate(
-    { plate_no },
+    { license_no },
     { $set: { status } },
     { new: true }
   )

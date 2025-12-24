@@ -1,13 +1,12 @@
 import joi from 'joi'
 
 export const createTruckSchema = joi.object({
-  plate_no: joi.string().required(),
+  license_no: joi.string().required(),
   max_capacity: joi.number().min(0).max(2500),
-  depot_location: joi.string(),
   status: joi.string().valid('available', 'unavailable', 'inService'),
   model: joi.string().required(),
   distance_travelled: joi.string(),
-  route: joi.string().valid('1', '2', '3', '4', '5', '6'),
+  route: joi.number().integer().min(1).max(6),
 })
 
 export const truckIdSchema = joi.object({
@@ -15,17 +14,16 @@ export const truckIdSchema = joi.object({
 })
 
 export const fleetRouteSchema = joi.object({
-  route: joi.string().valid('1', '2', '3', '4', '5', '6').required(),
+  route: joi.number().integer().min(1).max(6).required(),
 })
 
 export const updateTruckSchema = joi.object({
-  plate_no: joi.string().required(),
+  license_no: joi.string().required(),
   max_capacity: joi.number().min(0).max(2500),
-  depot_location: joi.string(),
   status: joi.string().valid('available', 'unavailable', 'inService'),
   model: joi.string(),
   distance_travelled: joi.string(),
-  route: joi.string().valid('1', '2', '3', '4', '5', '6'),
+  route: joi.number().integer().min(1).max(6),
 })
 
 // export const deleteTruckSchema = joi.object({
@@ -36,7 +34,7 @@ export const updateTruckSchema = joi.object({
 
 export const statusTruckSchema = joi.object({
   body: joi.object({
-    plate_no: joi.string().required(),
+    license_no: joi.string().required(),
     status: joi
       .string()
       .valid('available', 'unavailable', 'inService')
@@ -46,13 +44,12 @@ export const statusTruckSchema = joi.object({
 
 export const postTruckSchema = joi.object({
   body: joi.object({
-    plate_no: joi.string().required(),
+    license_no: joi.string().required(),
     max_capacity: joi.number().min(0).max(2500),
-    depot_location: joi.string(),
     status: joi.string().valid('available', 'unavailable', 'inService'),
     model: joi.string().required(),
     distance_travelled: joi.string(),
-    route: joi.string().valid('1', '2', '3', '4', '5', '6'),
+    route: joi.number().integer().min(1).max(6),
   }),
 })
 
@@ -64,7 +61,7 @@ export const postTruckSchema = joi.object({
 
 export const toggleStatusSchema = joi
   .object({
-    plate_no: joi.string().required(),
+   license_no: joi.string().required(),
     status: joi
       .string()
       .valid('available', 'unavailable', 'inService')
