@@ -1,9 +1,8 @@
 import joi from "joi";
 
+
 export const driverIdSchema = joi.object({
- params: joi.object({
-  license_no: joi.string().required(),
- }),
+  id: joi.string().required(),
 });
 
 export const createDriverSchema = joi.object({
@@ -21,16 +20,23 @@ export const updateDriverSchema = joi.object({
 });
 
 export const toggleStatusSchema = joi.object({
- body: joi.object({
   license_no: joi.string().required(),
   status: joi.string().valid("available", "unavailable", "inService","onDuty").required(),
- }),
+ 
 });
 
 // middleware/validate.js
-export default (schema) => {
+export const bodyValidator = (schema) => {
   return (req, res, next) => {
     const { error } = schema.validate(req.body);
+    if (error) return res.status(400).json({ message: error.details[0].message });
+    next();
+  };
+};
+
+export const paramsValidator = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.params);
     if (error) return res.status(400).json({ message: error.details[0].message });
     next();
   };

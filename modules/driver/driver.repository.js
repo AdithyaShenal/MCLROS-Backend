@@ -23,8 +23,8 @@ export async function findDriverById(id){
 
 export async function toggleStatus(license_no, status) {
   return await Driver.findOneAndUpdate(
-    license_no, {
-    $set:status}, {
+    {license_no}, {
+    $set:{status}}, {
     new: true
   })
 }

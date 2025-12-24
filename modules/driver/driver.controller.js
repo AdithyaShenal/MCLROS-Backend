@@ -12,7 +12,7 @@ export async function createDriver(req, res,next) {
 
 export async function findDrivers(req, res, next) {
  try {
-  const drivers = await driverService.findDrivers();
+  const drivers = await driverService.findAll();
   return res.json(drivers);
  } catch (err) {
   next(err);
