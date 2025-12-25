@@ -1,5 +1,4 @@
-
-import mongoose, { model } from 'mongoose'
+import mongoose, { model } from "mongoose";
 
 const fleetSchema = new mongoose.Schema(
   {
@@ -15,15 +14,16 @@ const fleetSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['available', 'unavailable', 'inService'],
-      default: 'available',
+      enum: ["available", "unavailable", "inService"],
+      default: "available",
     },
     model: {
       type: String,
       required: true,
     },
     distance_travelled: {
-      type: String,
+      type: Number,
+      min: 0,
     },
     route: {
       type: Number,

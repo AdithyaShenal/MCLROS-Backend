@@ -20,8 +20,8 @@ const app = express();
 
 mongoose
   .connect(
-    'mongodb://localhost:27017/MCLROS_DB'
-    //"mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
+    // 'mongodb://localhost:27017/MCLROS_DB'
+    "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
   )
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => {
