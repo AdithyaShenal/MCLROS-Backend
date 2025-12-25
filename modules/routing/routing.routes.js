@@ -13,7 +13,7 @@ import {
   routeCompletetionController,
   getCompletedRoutesController,
   getDispatchedController,
-  getInProgreeController,
+  getInProgressController,
   deleteRouteController,
   getHistoryController,
 } from "./routing.controller.js";

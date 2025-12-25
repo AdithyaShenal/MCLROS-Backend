@@ -1,5 +1,7 @@
 import Joi from "joi";
-Joi.objectId = require("joi-objectid")(Joi);
+import joiObjectId from "joi-objectid";
+
+Joi.objectId = joiObjectId(Joi);
 
 export const routeIdSchema = Joi.object({
   route_id: Joi.objectId(),
@@ -17,6 +19,7 @@ const qualitySchema = Joi.object({
 }).optional();
 
 const farmerSchema = Joi.object({
+  _id: Joi.objectId().required(),
   name: Joi.string().min(1).max(64).required(),
   location: Joi.object({
     lat: Joi.number().required(),
@@ -25,19 +28,17 @@ const farmerSchema = Joi.object({
   address: Joi.string().required(),
   phone: Joi.string().required(),
   route: Joi.number().required(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
 });
 
 const productionSchema = Joi.object({
+  _id: Joi.objectId().required(),
   farmer: farmerSchema.required(),
   volume: Joi.number().min(0).required(),
-  registration_time: Joi.date().optional(),
-  failure_reason: Joi.string().optional(),
   status: Joi.string()
     .valid("pending", "awaiting pickup", "collected", "failed")
     .required(),
-  collectedVolume: Joi.number().min(0).optional(),
-  blocked: Joi.boolean().required(),
-  quality: qualitySchema,
 }).allow(null); // production can be null
 
 const stopSchema = Joi.object({
@@ -59,7 +60,6 @@ export const dispatchRoutesSchema = Joi.array()
       status: Joi.string()
         .valid("dispatched", "completed", "canceled", "inProgress")
         .optional(),
-      active: Joi.boolean().required(),
       activatedAt: Joi.date().optional(),
     })
   )
