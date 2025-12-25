@@ -10,7 +10,7 @@ export async function getfleet() {
  }
 
  export async function createTruck(data) {
-  const truck= await fleetRepository.findTruckByPlateNo(data.plate_no);
+  const truck= await fleetRepository.findTruckByLicenseNo(data.license_no);
   if(truck){throw new errors.BadRequestError('Truck already exists')} 
   return await fleetRepository.create(data);
  
@@ -41,14 +41,14 @@ export async function getTruckById(id) {
     return trucks
   }
 
-  export async function findTruckByPlateNo(plate_no) {
-    const truck = await fleetRepository.findTruckByPlateNo(plate_no);
+  export async function findTruckByLicenseNo(license_no) {
+    const truck = await fleetRepository.findTruckByLicenseNo(license_no);
     if(!truck) throw errors.NotFoundError("Truck not found");
     return truck;
   }
 
-  export async function toggleTruckStatus(plate_no,status) {
-    const truck = await fleetRepository.findTruckByPlateNo(plate_no);
+  export async function toggleTruckStatus(license_no,status) {
+    const truck = await fleetRepository.findTruckByPlateNo(license_no);
     if(!truck) throw errors.NotFoundError("Truck not found");
-    return await fleetRepository.toggleStatus(plate_no,status);
+    return await fleetRepository.toggleStatus(license_no,status);
   }
