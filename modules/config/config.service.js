@@ -8,19 +8,27 @@ export async function getConfig() {
 }
 
 export async function updateNotification(deport_location,notification_template) {
- const config = await configRepository.getByDeportLocation(deport_location);
- if (!config) throw new errors.BadRequestError("deport not found");
+ const deport = await configRepository.getByDeportLocation(deport_location);
+ if (!deport) throw new errors.BadRequestError("deport not found");
  return await configRepository.updateTemplate(deport_location,notification_template);
 }
 
 export async function updateLat_Fat_Table(deport_location,lat_fat_table) {
- const config = await configRepository.getByDeportLocation(deport_location);
- if (!config) throw new errors.NotFoundError("Deport not found");
- return await configRepository.updateTemplate(data.deport_location, data.volume);
+ const deport = await configRepository.getByDeportLocation(deport_location);
+ if (!deport) throw new errors.NotFoundError("Deport not found");
+ //
+ const {lat,fat,rates} = lat_fat_table;
+ const invalidRow=rates.some((row)=>fat.length != row.length);
+ if(lat.length != rates.length) throw new errors.BadRequestError("rows data are not equal");
+ else if(invalidRow) throw new errors.BadRequestError("rows data are not equal");
+ 
+ 
+ return await configRepository.updateLat_Fat_Table(deport_location,lat_fat_table);
 }
 
-export async function updateConfigTemplate(data) {
- const config = await configRepository.getByDeportLocation(data.deport_location);
- if (!config) throw new errors.NotFoundError("Deport not found");
- return await configRepository.updateTemplate(data.deport_location, data.template);
+export async function create(deport_location
+) {
+ const deport = await configRepository.getByDeportLocation(deport_location);
+ if (deport) throw new errors.NotFoundError("Deport already exists");
+ return await configRepository.create(deport_location);
 }
