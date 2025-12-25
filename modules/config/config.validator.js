@@ -1,13 +1,7 @@
 import joi from 'joi'
 
 export const createConfigSchema = joi.object({
-deport_location: joi.object({ lat: joi.number().required(), lon: joi.number().required() }).unique().required(),
-lat_fat_table: joi.object({
- lat: joi.array().number(),
- fat: joi.array().numer(),
- rates: joi.array().number(),
-}),
-notification_template: joi.string().pattern(/\d/),
+deport_location: joi.object({ lat: joi.number().required(), lon: joi.number().required() }).unique().required()
 })
 
 export const configTemplateSchema = joi.object({
@@ -23,3 +17,22 @@ export const configLat_Fat_TableSchema = joi.object({
    rates: joi.array().number(),
   }).required(),
 })
+
+
+export const bodyValidator = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body)
+    if (error)
+      return res.status(400).json({ message: error.details[0].message })
+    next()
+  }
+}
+
+export const paramsValidator = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.params)
+    if (error)
+      return res.status(400).json({ message: error.details[0].message })
+    next()
+  }
+}
