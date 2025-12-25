@@ -13,7 +13,7 @@ export async function updateNotification(
   notification_template
 ) {
   const deport = await configRepository.getByDeportLocation(deport_location)
-  if (!deport) throw new errors.BadRequestError('deport not found')
+  if (!deport) throw new errors.NotFoundError('deport not found')
   return await configRepository.updateTemplate(
     deport_location,
     notification_template

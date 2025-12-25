@@ -12,9 +12,10 @@ import err from "./middleware/error.js";
 const app = express();
 
 // DB Connection
+
 mongoose
   .connect(
-    'mongodb://localhost/MCLROS_DB'
+    'mongodb://localhost:27017/MCLROS_DB'
     //"mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
   )
   .then(() => console.log("Connected to MongoDB Atlas"))
@@ -48,7 +49,7 @@ app.use((req, res, next) => {
 
 app.use(err);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);
