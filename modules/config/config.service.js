@@ -36,7 +36,6 @@ export async function updateLat_Fat_Table(deport_location, lat_fat_table) {
     lat_fat_table
    )
 }
-//
 export async function create(deport_location) {
   const deport = await configRepository.getByDeportLocation(deport_location)
   if (deport) throw new errors.NotFoundError('Deport already exists')
