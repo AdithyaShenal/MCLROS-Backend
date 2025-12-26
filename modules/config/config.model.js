@@ -5,21 +5,22 @@ const lat_fat_tableSchema = new mongoose.Schema({
   fat: { type: [Number], required: true },
   rates: { type: [[Number]], required: true },
 })
-
+const deportSchema = {
+  lat: { type: Number, required: true },
+  fat: { type: Number, required: true },
+}
 const configSchema = new mongoose.Schema(
   {
     deport_location: {
-      lat: { type: Number, required: true },
-      lon: { type: Number, required: true },
-    },unique: true
-    ,
+      type: deportSchema,
+      required: true,
+    },
     notification_template: {
       type: String,
       match: [/\d/, 'templet should contain the volume'], //givin the message template and it will take atleast even one value
     },
     lat_fat_table: {
       type: lat_fat_tableSchema,
-      
     },
   },
   { timestamps: true }

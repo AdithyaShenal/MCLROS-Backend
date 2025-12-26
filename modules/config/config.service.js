@@ -1,4 +1,4 @@
-import configRepository from './config.repository.js'
+import * as configRepository from './config.repository.js'
 import * as errors from '../../errors/errors.js'
 
 export async function getConfig() {

@@ -1,4 +1,4 @@
-import Config from "./config.model";
+import Config from "./config.model.js";
 
 export async function findAll() {
  return await Config.find();
@@ -15,7 +15,7 @@ export async function updateTemplate(deport_location,notification_template) {
  );
 }
 
-export async function updateTemplate(deport_location, lat_fat_table) {
+export async function updateLat_Fat_Table(deport_location, lat_fat_table) {
   return await Config.findOneAndUpdate(
     { "deport_location.lat": deport_location.lat, "deport_location.lon": deport_location.lon },
     { $set: { lat_fat_table } },

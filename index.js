@@ -6,6 +6,7 @@ import productionRoutes from "./modules/production/poduction.routes.js";
 import routing from "./modules/routing/routing.routes.js";
 import fleetRoutes from "./modules/fleet/fleet.routes.js";
 import driverRoutes from "./modules/driver/driver.routes.js";
+import config from "./modules/config/config.routes.js";
 import morgan from "morgan";
 import err from "./middleware/error.js";
 
@@ -41,6 +42,7 @@ app.use("/api/farmer", farmerRoutes);
 app.use("/api/trucks", fleetRoutes);
 app.use("/api/driver", driverRoutes);
 app.use("/api/production", productionRoutes);
+app.use("/api/config", config);
 app.use("/api/routing", routing);
 
 app.use((req, res, next) => {
