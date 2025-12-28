@@ -40,6 +40,12 @@ export async function submitProduction(req, res, next) {
   }
 }
 
+export async function getMyProductions(req, res) {
+  const productions = await productionService.getMyProductions(req.user._id);
+
+  res.status(200).json(productions);
+}
+
 export async function getProductionStatusToday(req, res, next) {
   const farmerId = req.user._id;
   const tz = "Asia/Colombo";
@@ -75,6 +81,31 @@ export async function getProductionStatusToday(req, res, next) {
     message: "No milk submitted today",
     production: null,
   });
+}
+
+// Update submitted production
+export async function updateProductionController(req, res) {
+  const farmer_id = req.user._id;
+  const production_id = req.params.production_id;
+  const volume = req.body.volume;
+
+  const production = await productionService.updateProductionService(
+    farmer_id,
+    production_id,
+    volume
+  );
+
+  res.status(200).json(production);
+}
+
+// Delete submitted production
+export async function deleteProductionController(req, res) {
+  const farmer_id = req.user._id;
+  const production_id = req.params.production_id;
+
+  await productionService.deleteProductionService(farmer_id, production_id);
+
+  res.status(200).json("Successfully deleted production");
 }
 
 export async function getAllPendingProductions(req, res, next) {
