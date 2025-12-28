@@ -11,6 +11,7 @@ export const createFarmerSchema = Joi.object({
     .pattern(/^[0-9]{10}$/)
     .required(),
   route: Joi.number().integer().min(1).max(6).required(),
+  shortName: Joi.string().required(),
 });
 
 export const farmerIdSchema = Joi.object({

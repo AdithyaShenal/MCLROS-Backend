@@ -8,8 +8,10 @@ import routing from "./modules/routing/routing.routes.js";
 import fleetRoutes from "./modules/fleet/fleet.routes.js";
 import driverRoutes from "./modules/driver/driver.routes.js";
 import analyticsRoutes from "./modules/analytics/analaytics.routes.js";
+import farmerAuth from "./modules/user/farmer/farmer.login.js";
 
 // Middleware import
+import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import err from "./middleware/error.js";
 import cors from "cors";
@@ -32,15 +34,18 @@ mongoose
 //Middlewares
 app.use(morgan("tiny"));
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 // Routes
+app.use("/api/auth/farmer", farmerAuth);
 app.use("/api/farmer", farmerRoutes);
 app.use("/api/trucks", fleetRoutes);
 app.use("/api/driver", driverRoutes);

@@ -1,13 +1,10 @@
 import * as farmerService from "./farmer.service.js";
 import { successResponse } from "../../util/response.js";
-import { BadRequestError } from "../../errors/errors.js";
 
 export async function createFarmer(req, res, next) {
-  throw new BadRequestError("Provided details invalid");
-
   try {
     const farmer = await farmerService.createFarmer(req.body);
-    successResponse(res, farmer, 201);
+    successResponse(res, farmer, 200);
   } catch (err) {
     next(err);
   }

@@ -1,17 +1,27 @@
 import * as productionService from "./poduction.service.js";
 import { getFarmersById } from "../farmer/farmer.service.js";
+import Production from "./production.model.js";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
+import _ from "lodash";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function submitProduction(req, res, next) {
   try {
-    const farmer = await getFarmersById(req.body.farmer_id);
+    const farmer = await getFarmersById(req.user._id);
     if (!farmer)
       return res
         .status(400)
         .json({ success: false, message: "No farmer found for given id" });
 
-    let production = {
+    const production = {
       farmer: {
         _id: farmer._id,
+        pinNo: farmer.pinNo,
+        shortName: farmer.shortName,
         name: farmer.name,
         location: farmer.location,
         address: farmer.address,
@@ -22,12 +32,49 @@ export async function submitProduction(req, res, next) {
       volume: req.body.volume,
     };
 
-    production = await productionService.submitProduction(production);
+    const saved = await productionService.submitProduction(production);
 
-    return res.json(production);
+    return res.json(saved);
   } catch (err) {
     next(err);
   }
+}
+
+export async function getProductionStatusToday(req, res, next) {
+  const farmerId = req.user._id;
+  const tz = "Asia/Colombo";
+
+  const startOfDay = dayjs().tz(tz).startOf("day").utc().toDate();
+  const endOfDay = dayjs().tz(tz).endOf("day").utc().toDate();
+
+  const existing = await Production.findOne({
+    "farmer._id": farmerId,
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+  }).lean(); // important for lodash + performance
+
+  if (existing) {
+    const production = _.pick(existing, [
+      "_id",
+      "volume",
+      "status",
+      "registration_time",
+      "failure_reason",
+      "collectedVolume",
+      "blocked",
+    ]);
+
+    return res.json({
+      registered: true,
+      message: "Milk already submitted today",
+      production,
+    });
+  }
+
+  return res.json({
+    registered: false,
+    message: "No milk submitted today",
+    production: null,
+  });
 }
 
 export async function getAllPendingProductions(req, res, next) {

@@ -3,13 +3,18 @@ import * as productionController from "./production.controller.js";
 import * as productionValidator from "./production.validator.js";
 import validate from "../middleware/validate.js";
 
+import farmerAuth from "../user/farmer/farmer.auth.js";
+
 const router = express.Router();
 
 router.post(
   "/",
+  farmerAuth,
   validate(productionValidator.submitProductionSchema),
   productionController.submitProduction
 );
+
+router.get("/today", farmerAuth, productionController.getProductionStatusToday);
 
 router.get("/pending/all", productionController.getAllPendingProductions);
 

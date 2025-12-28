@@ -3,16 +3,16 @@ import * as routingRepository from "./routing.repository.js";
 import * as errors from "../../errors/errors.js";
 import Route from "./routing.model.js";
 
-const vehicles = [
-  { vehicle_id: 1, capacity: 15, license_no: "ABC 1010", route: 1 },
-  { vehicle_id: 2, capacity: 15, license_no: "ABC 2020", route: 2 },
-  { vehicle_id: 3, capacity: 15, license_no: "ABC 3030", route: 3 },
-  { vehicle_id: 4, capacity: 15, license_no: "ABC 4040", route: 4 },
-  { vehicle_id: 5, capacity: 15, license_no: "ABC 5050", route: 5 },
-  { vehicle_id: 6, capacity: 15, license_no: "ABC 6060", route: 6 },
-];
+// const vehicles = [
+//   { vehicle_id: 1, capacity: 15, license_no: "ABC 1010", route: 1 },
+//   { vehicle_id: 2, capacity: 15, license_no: "ABC 2020", route: 2 },
+//   { vehicle_id: 3, capacity: 15, license_no: "ABC 3030", route: 3 },
+//   { vehicle_id: 4, capacity: 15, license_no: "ABC 4040", route: 4 },
+//   { vehicle_id: 5, capacity: 15, license_no: "ABC 5050", route: 5 },
+//   { vehicle_id: 6, capacity: 15, license_no: "ABC 6060", route: 6 },
+// ];
 
-const vehicle_capacities = [15, 15, 15, 15, 15, 15];
+// const vehicle_capacities = [15, 15, 15, 15, 15, 15];
 const depot = { lat: 7.019041, lon: 79.969565 };
 
 export async function generateRoutesAuto() {
@@ -24,6 +24,18 @@ export async function generateRoutesAuto() {
       "No pending productions available at this moment"
     );
   }
+
+  const availableTrucks = await routingRepository.getAllAvailableTrucks();
+
+  if (availableTrucks.length === 0) {
+    throw new errors.NotFoundError("No trucks available at this moment");
+  }
+
+  const vehicle_capacities = [];
+
+  availableTrucks.forEach((truck) => {
+    vehicle_capacities.push(truck.capacity);
+  });
 
   // Building VRP input
   const coords = [[depot.lon, depot.lat]];
@@ -47,9 +59,7 @@ export async function generateRoutesAuto() {
   );
 
   if (totalCapacity < totalDemand) {
-    throw new errors.BadRequestError(
-      `Insufficient capacity in route ${routeId}`
-    );
+    throw new errors.BadRequestError(`Insufficient capacity in route`);
   }
 
   // --------------------------------------------------------------------------------------------------
@@ -81,6 +91,9 @@ export async function generateRoutesAuto() {
   }
 
   routes = vrpResponse.data.routes;
+
+  console.log(JSON.stringify(routes));
+
   // Handling Error
   if (routes.length === 0) {
     return {
@@ -95,12 +108,14 @@ export async function generateRoutesAuto() {
     const vehicleIndex = route.vehicle_id;
 
     // Handling Error
-    if (!vehicles[vehicleIndex]) {
+    if (!availableTrucks[vehicleIndex]) {
       throw new Error(`Invalid vehicle index returned: ${vehicleIndex}`);
     }
 
-    route.vehicle_id = vehicles[vehicleIndex].vehicle_id;
-    route.license_no = vehicles[vehicleIndex].license_no;
+    route.vehicle_id = availableTrucks[vehicleIndex]._id;
+    route.license_no = availableTrucks[vehicleIndex].license_no;
+    route.model = availableTrucks[vehicleIndex].model;
+    route.route = availableTrucks[vehicleIndex].route;
 
     let order = 1;
     const mappedStops = route.stops.map((stop) => {
@@ -133,7 +148,7 @@ export async function generateRoutesAuto() {
   return routes;
 }
 
-// Generate VRP solution route-wise -----------------------------------------------------------------
+// Generate VRP solution route-wise-all -----------------------------------------------------------------
 export async function generateRouteWiseAll() {
   const productions = await routingRepository.getPendingProduction();
 
@@ -143,6 +158,18 @@ export async function generateRouteWiseAll() {
       "No pending productions available at this moment"
     );
   }
+
+  const availableTrucks = await routingRepository.getAllAvailableTrucks();
+
+  if (availableTrucks.length === 0) {
+    throw new errors.NotFoundError("No trucks available at this moment");
+  }
+
+  const vehicle_capacities = [];
+
+  availableTrucks.forEach((truck) => {
+    vehicle_capacities.push(truck.capacity);
+  });
 
   const requestBody = [];
   const depotCoords = [depot.lon, depot.lat];
@@ -174,22 +201,25 @@ export async function generateRouteWiseAll() {
       }
     });
 
-    // Vehicle related operations------
-    const vehicle = vehicles.find((v) => v.route === i);
+    if (structure.coords.length === 1) {
+      // No farmers in this route, only depot
+      productionIndexMap.push(mapping);
+      continue; // do NOT push to requestBody
+    }
 
-    // Handling Error
-    if (!vehicle) {
+    // Vehicle related operations------
+    const vehiclesForRoute = availableTrucks.filter((v) => v.route === i);
+    if (vehiclesForRoute.length === 0) {
       throw new errors.InternalError(`No vehicle assigned for route ${i}`);
     }
-    mapping.vehicles.push(vehicle);
-    structure.vehicles.push(vehicle);
 
-    const caps = vehicles.filter((v) => v.route === i).map((v) => v.capacity);
-    if (caps.length === 0)
-      throw new errors.InternalError(
-        "`No vehicle capacity found for route ${i}`"
-      );
-    structure.vehicle_capacities.push(...caps);
+    // push all vehicles
+    mapping.vehicles.push(...vehiclesForRoute);
+    structure.vehicles.push(...vehiclesForRoute);
+
+    const capacities = vehiclesForRoute.map((v) => v.capacity);
+
+    structure.vehicle_capacities.push(...capacities);
 
     productionIndexMap.push(mapping);
     requestBody.push(structure);
@@ -260,6 +290,8 @@ export async function generateRouteWiseAll() {
 
       r.stops = mappedStops;
       r.license_no = mapping.vehicles[r.vehicle_id].license_no;
+      r.truck_model = mapping.vehicles[r.vehicle_id].model;
+      r.truck_route = mapping.vehicles[r.vehicle_id].route;
       routeList.push(r);
     });
   });
@@ -276,24 +308,24 @@ export async function generateRouteWise(routeId) {
   // Handling Error
   if (productions.length === 0) {
     throw new errors.NotFoundError(
-      "No pending productions available at this moment"
+      `No pending productions available for Route - ${routeId} at this moment`
     );
+  }
+
+  const availableTrucks = await routingRepository.getAllAvailableTrucksByRoute(
+    routeId
+  );
+
+  if (availableTrucks.length === 0) {
+    throw new errors.NotFoundError(`No trucks available for route ${routeId}`);
   }
 
   const vehicleCapacities = [];
   const vehicleList = [];
-
-  vehicles.forEach((vehicle) => {
-    if (vehicle.route === Number(routeId)) {
-      vehicleCapacities.push(vehicle.capacity);
-      vehicleList.push(vehicle);
-    }
+  availableTrucks.forEach((truck) => {
+    vehicleCapacities.push(truck.capacity);
+    vehicleList.push(truck);
   });
-
-  // Handling Error
-  if (vehicleCapacities.length === 0) {
-    throw new Error(`No vehicles available for route ${routeId}`);
-  }
 
   // Building VRP input
   const coords = [[depot.lon, depot.lat]];
@@ -373,6 +405,8 @@ export async function generateRouteWise(routeId) {
 
     route.vehicle_id = vehicleList[vehicleIndex].vehicle_id;
     route.license_no = vehicleList[vehicleIndex].license_no;
+    route.model = vehicleList[vehicleIndex].model;
+    route.route = vehicleList[vehicleIndex].route;
 
     let order = 1;
     const mappedStops = route.stops.map((stop) => {

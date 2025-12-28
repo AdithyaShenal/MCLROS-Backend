@@ -1,5 +1,6 @@
 import Production from "../production/production.model.js";
 import Route from "./routing.model.js";
+import Trucks from "../fleet/fleet.model.js";
 import mongoose from "mongoose";
 
 export async function getPendingProduction() {
@@ -146,4 +147,62 @@ export async function getCompletedAndCanceledRoutes() {
   });
 
   return result;
+}
+
+export async function getAllAvailableTrucks() {
+  const trucks = await Trucks.find({
+    status: "available",
+  });
+
+  return trucks;
+}
+
+export async function getAllAvailableTrucksByRoute(route) {
+  const trucks = await Trucks.find({
+    route: route,
+  });
+
+  return trucks;
+}
+
+export async function getTotalPendingProduction() {
+  const result = await Production.aggregate([
+    {
+      $match: {
+        status: "pending",
+        blocked: false,
+      },
+    },
+    {
+      $group: {
+        _id: null, // no grouping by field
+        totalVolume: { $sum: "$volume" },
+      },
+    },
+  ]);
+
+  // If no matching documents, result will be []
+  const totalPendingProductionVolume = result[0]?.totalVolume || 0;
+
+  return totalPendingProductionVolume;
+}
+
+export async function getTotalTruckCapacity() {
+  const result = await Trucks.aggregate([
+    {
+      $match: {
+        status: "available",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalCapacity: { $sum: "$capacity" },
+      },
+    },
+  ]);
+
+  const totalAvailableTruckCapacity = result[0]?.totalCapacity || 0;
+
+  return totalAvailableTruckCapacity;
 }

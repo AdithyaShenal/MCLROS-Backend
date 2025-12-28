@@ -28,7 +28,7 @@ export async function getTotalTruckCapacity() {
   const result = await Trucks.aggregate([
     {
       $match: {
-        ststus: "available",
+        status: "available",
       },
     },
     {
@@ -44,6 +44,7 @@ export async function getTotalTruckCapacity() {
   return totalAvailableTruckCapacity;
 }
 
+// Output
 // [
 //   { route: 1, totalVolume: 1200 },
 //   { route: 2, totalVolume: 980 },
@@ -79,6 +80,7 @@ export async function getProductionSumByRoute() {
   return result;
 }
 
+// Output
 // [
 //   { route: 1, totalCapacity: 5000 },
 //   { route: 2, totalCapacity: 3200 },
