@@ -35,14 +35,7 @@ router.post("/login", async (req, res) => {
     { expiresIn: "1h" }
   );
 
-  res.cookie("authToken", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 1000 * 60 * 60,
-    path: "/",
-  });
-
+  // Return token in response body only (no cookies)
   return res.status(200).json({
     success: true,
     message: "Successfully logged in",

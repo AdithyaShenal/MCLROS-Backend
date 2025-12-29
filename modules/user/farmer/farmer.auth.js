@@ -24,28 +24,19 @@ import * as errors from "../../../errors/errors.js";
 
 const authFarmer = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  let token;
 
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.substring(7);
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new errors.UnauthorizedError("Access denied. No token provided.");
   }
 
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: "Access denied. No token provided.",
-    });
-  }
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "Mysecret");
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid token.",
-    });
+    throw new errors.UnauthorizedError("Invalid token.");
   }
 };
 
