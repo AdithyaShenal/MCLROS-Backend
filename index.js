@@ -126,7 +126,7 @@ app.use(
 );
 
 // Handle preflight requests explicitly
-app.options("*", cors());
+app.options("/*", cors());
 
 // Other Middlewares
 app.use(morgan("tiny"));
