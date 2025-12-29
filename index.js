@@ -1,3 +1,74 @@
+// import express from "express";
+// import mongoose from "mongoose";
+
+// // Route imports
+// import farmerRoutes from "./modules/farmer/farmer.routes.js";
+// import productionRoutes from "./modules/production/poduction.routes.js";
+// import routing from "./modules/routing/routing.routes.js";
+// import fleetRoutes from "./modules/fleet/fleet.routes.js";
+// import driverRoutes from "./modules/driver/driver.routes.js";
+// import analyticsRoutes from "./modules/analytics/analaytics.routes.js";
+// import farmerAuth from "./modules/user/farmer/farmer.login.js";
+
+// // Middleware import
+// import cookieParser from "cookie-parser";
+// import morgan from "morgan";
+// import err from "./middleware/error.js";
+// import cors from "cors";
+
+// const app = express();
+
+// // DB Connection
+
+// mongoose
+//   .connect(
+//     // 'mongodb://localhost:27017/MCLROS_DB'
+//     "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
+//   )
+//   .then(() => console.log("Connected to MongoDB Atlas"))
+//   .catch((err) => {
+//     console.error("MongoDB connection error:", err.message);
+//     process.exit(1);
+//   });
+
+// //Middlewares
+// app.use(morgan("tiny"));
+// app.use(express.json());
+// app.use(cookieParser());
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "capacitor://localhost",
+//       "http://localhost",
+//     ],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
+
+// // Routes
+// app.use("/api/auth/farmer", farmerAuth);
+// app.use("/api/farmer", farmerRoutes);
+// app.use("/api/trucks", fleetRoutes);
+// app.use("/api/driver", driverRoutes);
+// app.use("/api/production", productionRoutes);
+// app.use("/api/routing", routing);
+// app.use("/api/analytics", analyticsRoutes);
+
+// app.use((req, res, next) => {
+//   res.status(201).json("Hello this is MCLROS System");
+// });
+
+// app.use(err);
+
+// const port = process.env.PORT || 4000;
+
+// app.listen(port, () => {
+//   console.log(`Listening to port ${port}`);
+// });
+
 import express from "express";
 import mongoose from "mongoose";
 
@@ -19,10 +90,8 @@ import cors from "cors";
 const app = express();
 
 // DB Connection
-
 mongoose
   .connect(
-    // 'mongodb://localhost:27017/MCLROS_DB'
     "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
   )
   .then(() => console.log("Connected to MongoDB Atlas"))
@@ -31,21 +100,38 @@ mongoose
     process.exit(1);
   });
 
-//Middlewares
+// CORS MUST be before other middlewares
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or Postman)
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "capacitor://localhost",
+        "http://localhost",
+      ];
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Allow all origins for now during debugging
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false, // Changed to false since we're not using cookies
+    optionsSuccessStatus: 200,
+  })
+);
+
+// Handle preflight requests explicitly
+app.options("*", cors());
+
+// Other Middlewares
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "capacitor://localhost",
-      "http://localhost",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
 
 // Routes
 app.use("/api/auth/farmer", farmerAuth);
@@ -57,7 +143,7 @@ app.use("/api/routing", routing);
 app.use("/api/analytics", analyticsRoutes);
 
 app.use((req, res, next) => {
-  res.status(201).json("Hello this is MCLROS System");
+  res.status(200).json("Hello this is MCLROS System");
 });
 
 app.use(err);
