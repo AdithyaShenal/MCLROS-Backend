@@ -39,13 +39,14 @@ router.post("/login", async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    // maxAge: 1000 * 60 * 60,
+    maxAge: 1000 * 60 * 60,
     path: "/",
   });
 
   return res.status(200).json({
     success: true,
     message: "Successfully logged in",
+    token,
   });
 });
 
