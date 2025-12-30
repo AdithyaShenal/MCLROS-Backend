@@ -30,7 +30,7 @@ router.delete(
 );
 
 // Fetch today production by farmer
-router.get("/today", farmerAuth, productionController.getProductionStatusToday);
+router.get("/today", farmerAuth, productionController.getMyProductionToday);
 
 // Get farmer collected/failed production
 router.get("/me", farmerAuth, productionController.getMyProductions);

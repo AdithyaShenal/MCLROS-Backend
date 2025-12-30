@@ -1,5 +1,4 @@
 import * as productionService from "./poduction.service.js";
-import { getFarmersById } from "../farmer/farmer.service.js";
 import Production from "./production.model.js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
@@ -24,29 +23,12 @@ export async function getMyProductions(req, res) {
   res.status(200).json(productions);
 }
 
-export async function getProductionStatusToday(req, res, next) {
+export async function getMyProductionToday(req, res) {
   const farmerId = req.user._id;
-  const tz = "Asia/Colombo";
 
-  const startOfDay = dayjs().tz(tz).startOf("day").utc().toDate();
-  const endOfDay = dayjs().tz(tz).endOf("day").utc().toDate();
+  const production = await productionService.getMyProductionToday(farmerId);
 
-  const existing = await Production.findOne({
-    "farmer._id": farmerId,
-    createdAt: { $gte: startOfDay, $lte: endOfDay },
-  }).lean(); // important for lodash + performance
-
-  if (existing) {
-    const production = _.pick(existing, [
-      "_id",
-      "volume",
-      "status",
-      "registration_time",
-      "failure_reason",
-      "collectedVolume",
-      "blocked",
-    ]);
-
+  if (production) {
     return res.json({
       registered: true,
       message: "Milk already submitted today",

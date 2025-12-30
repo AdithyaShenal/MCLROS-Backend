@@ -3,10 +3,6 @@ import mongoose from "mongoose";
 import Production from "./production.model.js";
 import Route from "../routing/routing.model.js";
 import * as errors from "../../errors/errors.js";
-import timezone from "dayjs/plugin/timezone.js";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 export async function submitProduction(farmer_id, volume) {
   // Check already submitted production for today?
@@ -39,6 +35,26 @@ export async function getMyProductions(farmer_id) {
     "farmer._id": farmer_id,
     status: { $in: ["failed", "collected"] },
   }).sort({ createdAt: -1 });
+}
+
+export async function getMyProductionToday(farmer_id) {
+  const existing = await productionRepository.isExistsTodayProd(farmer_id);
+
+  if (existing) {
+    const production = _.pick(existing, [
+      "_id",
+      "volume",
+      "status",
+      "registration_time",
+      "failure_reason",
+      "collectedVolume",
+      "blocked",
+    ]);
+
+    return production;
+  }
+
+  return null;
 }
 
 // Update submitted product

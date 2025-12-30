@@ -1,5 +1,7 @@
 import Production from "./production.model.js";
 import timezone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
+import dayjs from "dayjs";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -14,7 +16,7 @@ export async function isExistsTodayProd(farmer_id) {
     createdAt: { $gte: startOfDay, $lte: endOfDay },
   });
 
-  return !!existing;
+  return existing;
 }
 
 export async function submit(data) {
