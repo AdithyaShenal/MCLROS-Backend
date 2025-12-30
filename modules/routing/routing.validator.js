@@ -8,7 +8,7 @@ export const routeIdSchema = Joi.object({
 });
 
 export const driverIdSchema = Joi.object({
-  route_id: Joi.objectId(),
+  driver_id: Joi.objectId(),
 });
 
 const qualitySchema = Joi.object({
