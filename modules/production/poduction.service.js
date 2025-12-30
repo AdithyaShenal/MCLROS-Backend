@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Production from "./production.model.js";
 import Route from "../routing/routing.model.js";
 import * as errors from "../../errors/errors.js";
+import _ from "lodash";
 
 export async function submitProduction(farmer_id, volume) {
   // Check already submitted production for today?
