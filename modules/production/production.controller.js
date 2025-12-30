@@ -10,34 +10,12 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export async function submitProduction(req, res, next) {
-  try {
-    const farmer = await getFarmersById(req.user._id);
-    if (!farmer)
-      return res
-        .status(400)
-        .json({ success: false, message: "No farmer found for given id" });
+  const farmer_id = req.user._id;
+  const volume = req.body.volume;
 
-    const production = {
-      farmer: {
-        _id: farmer._id,
-        pinNo: farmer.pinNo,
-        shortName: farmer.shortName,
-        name: farmer.name,
-        location: farmer.location,
-        address: farmer.address,
-        phone: farmer.phone,
-        route: farmer.route,
-      },
+  const savedProd = await productionService.submitProduction(farmer_id, volume);
 
-      volume: req.body.volume,
-    };
-
-    const saved = await productionService.submitProduction(production);
-
-    return res.json(saved);
-  } catch (err) {
-    next(err);
-  }
+  res.status(200).json(savedProd);
 }
 
 export async function getMyProductions(req, res) {

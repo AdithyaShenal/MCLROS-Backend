@@ -3,10 +3,35 @@ import mongoose from "mongoose";
 import Production from "./production.model.js";
 import Route from "../routing/routing.model.js";
 import * as errors from "../../errors/errors.js";
+import timezone from "dayjs/plugin/timezone.js";
 
-export async function submitProduction(data) {
-  const production = await productionRepository.submit(data);
-  return production;
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export async function submitProduction(farmer_id, volume) {
+  // Check already submitted production for today?
+  const exists = await productionRepository.isExistsTodayProd(farmer_id);
+  if (exists) throw new errors.BadRequestError("Cannot submit again.");
+
+  const farmer = await getFarmersById(farmer_id);
+  if (!farmer)
+    throw new errors.BadRequestError("Farmer with give id not found.");
+
+  const production = {
+    farmer: {
+      _id: farmer._id,
+      pinNo: farmer.pinNo,
+      shortName: farmer.shortName,
+      name: farmer.name,
+      location: farmer.location,
+      address: farmer.address,
+      phone: farmer.phone,
+      route: farmer.route,
+    },
+    volume: volume,
+  };
+
+  return await productionRepository.submit(production);
 }
 
 export async function getMyProductions(farmer_id) {
@@ -36,13 +61,15 @@ export async function updateProductionService(
     );
 
     if (!production) {
-      throw new Error("Production not found or farmer not authorized");
+      throw new Error("Production not found");
     }
 
-    //  update only if collected
-    if (production.status === "collected") {
+    //  update only if not collected
+    const LOCKED_STATUSES = ["collected", "failed"];
+
+    if (LOCKED_STATUSES.includes(production.status)) {
       throw new errors.BadRequestError(
-        "Cannot update production that is already collected"
+        `Cannot update production that is already ${production.status}`
       );
     }
 

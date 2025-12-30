@@ -3,16 +3,6 @@ import * as routingRepository from "./routing.repository.js";
 import * as errors from "../../errors/errors.js";
 import Route from "./routing.model.js";
 
-// const vehicles = [
-//   { vehicle_id: 1, capacity: 15, license_no: "ABC 1010", route: 1 },
-//   { vehicle_id: 2, capacity: 15, license_no: "ABC 2020", route: 2 },
-//   { vehicle_id: 3, capacity: 15, license_no: "ABC 3030", route: 3 },
-//   { vehicle_id: 4, capacity: 15, license_no: "ABC 4040", route: 4 },
-//   { vehicle_id: 5, capacity: 15, license_no: "ABC 5050", route: 5 },
-//   { vehicle_id: 6, capacity: 15, license_no: "ABC 6060", route: 6 },
-// ];
-
-// const vehicle_capacities = [15, 15, 15, 15, 15, 15];
 const depot = { lat: 7.019041, lon: 79.969565 };
 
 export async function generateRoutesAuto() {
