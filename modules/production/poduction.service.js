@@ -4,13 +4,14 @@ import Production from "./production.model.js";
 import Route from "../routing/routing.model.js";
 import * as errors from "../../errors/errors.js";
 import _ from "lodash";
+import * as farmerRepo from "../farmer/farmer.repository.js";
 
 export async function submitProduction(farmer_id, volume) {
   // Check already submitted production for today?
   const exists = await productionRepository.isExistsTodayProd(farmer_id);
   if (exists) throw new errors.BadRequestError("Cannot submit again.");
 
-  const farmer = await getFarmersById(farmer_id);
+  const farmer = await farmerRepo.findById(farmer_id);
   if (!farmer)
     throw new errors.BadRequestError("Farmer with give id not found.");
 

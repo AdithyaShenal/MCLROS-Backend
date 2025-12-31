@@ -38,6 +38,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
+      "http://localhost:5175",
       "http://localhost:5173",
       "http://localhost",
       "capacitor://localhost",
@@ -58,9 +59,9 @@ app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 app.use("/api/analytics", analyticsRoutes);
 
-app.use((req, res, next) => {
-  res.status(201).json("Hello this is MCLROS System");
-});
+// app.use((req, res, next) => {
+//   res.status(201).json("Hello this is MCLROS System");
+// });
 
 app.use(err);
 

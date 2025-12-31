@@ -35,7 +35,7 @@ router.get("/optimize/route-wise/:route", generateRouteWise);
 // Dispatch Generated Routes (Handle Idemponency)
 router.post(
   "/dispatch",
-  validate(routeValidator.dispatchRoutesSchema),
+  // validate(routeValidator.dispatchRoutesSchema),
   dispatchRoutes
 );
 
