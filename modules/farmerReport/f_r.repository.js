@@ -1,5 +1,5 @@
 import FarmerReport from './f_r.model.js'
-import farmer from '../farmer/farmer.model.js'
+import farmer from '../farmer/farmer.model.js'//ensuring that farmer model was created
 
 export async function create(data) {
   const farmer_report = new FarmerReport(data)
@@ -22,4 +22,6 @@ export async function getAll() {
     .populate('adminID', 'name')
 }
 
-export async function update_report(id) {}
+export async function update_report(id) {
+ return await FarmerReport.findByIdAndUpdate(id)
+}

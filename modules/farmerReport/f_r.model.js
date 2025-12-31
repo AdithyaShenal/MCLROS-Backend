@@ -4,7 +4,7 @@ const farmerReportSchema = new mongoose.Schema(
   {
     farmerID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'farmer',
+      ref: 'Farmer',
       required: true,
     },
     report: {
@@ -13,7 +13,7 @@ const farmerReportSchema = new mongoose.Schema(
     },
     adminID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'admin',
+      ref: 'Admin',
     },
     feedback: {
       type: String,
