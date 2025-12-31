@@ -34,8 +34,8 @@ export async function get_report(id) {
   return report
 }
 
-export async function update_report(data){
- const report=await farmerReportRepo.get_report(data.id)
+export async function update_report(id,data){
+ const report=await farmerReportRepo.get_report(id)
  if(!report) throw new errors.NotFoundError("report not found")
-  return farmerReportRepo.update_report(data)
+  return farmerReportRepo.update_report(id,data)
 }

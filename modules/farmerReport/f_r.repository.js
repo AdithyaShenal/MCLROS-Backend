@@ -23,6 +23,6 @@ export async function getAll() {
     .populate('adminID', 'name')
 }
 
-export async function update_report(id) {
- return await FarmerReport.findByIdAndUpdate(id)
+export async function update_report(id,data) {
+ return await FarmerReport.findByIdAndUpdate(id,data,{new:true})
 }

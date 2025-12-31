@@ -36,3 +36,13 @@ export async function get_report(req, res, next) {
     next(err)
   }
 }
+
+export async function update_report(req,res,next){
+ try{
+   const report =await farmerReportService.get_report(req.params.id,req.body.data)
+   return res.json(report)
+ }
+ catch(err){
+  next(err)
+ }
+}
