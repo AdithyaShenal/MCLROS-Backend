@@ -1,4 +1,5 @@
 import FarmerReport from './f_r.model.js'
+import farmer from '../farmer/farmer.model.js'
 
 export async function create(data) {
   const farmer_report = new FarmerReport(data)
@@ -9,10 +10,16 @@ export async function delete_report(id) {
   return await FarmerReport.findByIdAndDelete(id)
 }
 
-
-
 export async function get_report(id) {
-  return await FarmerReport.findById(id).populate("farmerID","name phone").populate("adminID","name")
+  return await FarmerReport.findById(id)
+    .populate('farmerID', 'name phone')
+    .populate('adminID', 'name')
 }
 
+export async function getAll() {
+  return await FarmerReport.find()
+    .populate('farmerID', 'name phone')
+    .populate('adminID', 'name')
+}
 
+export async function update_report(id) {}
