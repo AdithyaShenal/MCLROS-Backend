@@ -21,6 +21,8 @@ export async function generateRouteWise(req, res) {
 
 // Body validation done.
 export async function dispatchRoutes(req, res) {
+  console.log(req.body);
+
   await routingService.dispatchRoutes(req.body);
   successResponse(res, "Successfully dispatched", 201);
 }

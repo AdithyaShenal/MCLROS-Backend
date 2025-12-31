@@ -28,6 +28,7 @@ const farmerSchema = Joi.object({
   address: Joi.string().required(),
   phone: Joi.string().required(),
   route: Joi.number().required(),
+  shortName: Joi.string().optional(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
 });
@@ -51,7 +52,8 @@ const stopSchema = Joi.object({
 export const dispatchRoutesSchema = Joi.array()
   .items(
     Joi.object({
-      vehicle_id: Joi.number().required(), // Number in your DB
+      vehicle_id: Joi.objectId().optional(), // Number in your DB
+      model: Joi.string().optional(),
       driver_id: Joi.objectId().optional(),
       license_no: Joi.string().required(),
       stops: Joi.array().items(stopSchema).min(1).required(),
