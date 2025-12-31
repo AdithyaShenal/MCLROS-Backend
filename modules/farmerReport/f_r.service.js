@@ -11,9 +11,31 @@ export async function create(data) {
 }
 
 export async function delete_report(id) {
-  const report = await farmerReportRepo.findById(id)
+  const report = await farmerReportRepo.get_report(id)
   if (!report) {
     throw new errors.NotFoundError('report is not found')
   }
   return farmerReportRepo.delete_report(id)
+}
+
+export async function getAll() {
+  const reports = await farmerReportRepo.getAll()
+  if (!reports || reports.length == 0) {
+    throw new errors.NotFoundError('no reports available')
+  }
+  return reports
+}
+
+export async function get_report(id) {
+  const report = await farmerReportRepo.get_report(id)
+  if (!report) {
+    throw new errors.NotFoundError('report is not found')
+  }
+  return report
+}
+
+export async function update_report(data){
+ const report=await farmerReportRepo.get_report(data.id)
+ if(!report) throw new errors.NotFoundError("report not found")
+  return farmerReportRepo.update_report(data)
 }
