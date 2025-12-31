@@ -1,0 +1,90 @@
+import Joi from "joi";
+Joi.objectId = require("joi-objectid")(Joi);
+
+export const routeIdSchema = Joi.object({
+  route_id: Joi.objectId(),
+});
+
+export const driverIdSchema = Joi.object({
+  route_id: Joi.objectId(),
+});
+
+const qualitySchema = Joi.object({
+  fat: Joi.number().optional(),
+  lat: Joi.number().optional(),
+  density: Joi.number().optional(),
+  water_ratio: Joi.number().optional(),
+}).optional();
+
+const farmerSchema = Joi.object({
+  name: Joi.string().min(1).max(64).required(),
+  location: Joi.object({
+    lat: Joi.number().required(),
+    lon: Joi.number().required(),
+  }).required(),
+  address: Joi.string().required(),
+  phone: Joi.string().required(),
+  route: Joi.number().required(),
+});
+
+const productionSchema = Joi.object({
+  farmer: farmerSchema.required(),
+  volume: Joi.number().min(0).required(),
+  registration_time: Joi.date().optional(),
+  failure_reason: Joi.string().optional(),
+  status: Joi.string()
+    .valid("pending", "awaiting pickup", "collected", "failed")
+    .required(),
+  collectedVolume: Joi.number().min(0).optional(),
+  blocked: Joi.boolean().required(),
+  quality: qualitySchema,
+}).allow(null); // production can be null
+
+const stopSchema = Joi.object({
+  order: Joi.number().min(1).required(),
+  node: Joi.number().required(),
+  production: productionSchema, // allow null
+  load_after_visit: Joi.number().min(0).required(),
+});
+
+export const dispatchRoutesSchema = Joi.array()
+  .items(
+    Joi.object({
+      vehicle_id: Joi.number().required(), // Number in your DB
+      driver_id: Joi.objectId().optional(),
+      license_no: Joi.string().required(),
+      stops: Joi.array().items(stopSchema).min(1).required(),
+      load: Joi.number().min(0).required(),
+      distance: Joi.number().min(0).required(),
+      status: Joi.string()
+        .valid("dispatched", "completed", "canceled", "inProgress")
+        .optional(),
+      active: Joi.boolean().required(),
+      activatedAt: Joi.date().optional(),
+    })
+  )
+  .min(1)
+  .required();
+
+export const confirmProductionSchema = Joi.object({
+  route_id: Joi.objectId().required(),
+  production_id: Joi.objectId().required(),
+  driver_id: Joi.objectId().required(),
+  collectedVolume: Joi.number().min(0).required(),
+});
+
+export const issuePickupReportSchema = Joi.object({
+  route_id: Joi.objectId().required(),
+  production_id: Joi.objectId().required(),
+  driver_id: Joi.objectId().required(),
+  failureReason: Joi.string().required(),
+});
+
+export const routeActivateSchema = Joi.object({
+  route_id: Joi.objectId().required(),
+  driver_id: Joi.objectId().required(),
+});
+
+export const routeCompletionDriverSchema = Joi.object({
+  driver_id: Joi.objectId().required(),
+});

@@ -36,3 +36,9 @@ export class ConflictError extends AppError {
     super(409, message, "CONFLICT_ERROR");
   }
 }
+
+export class ValidationError extends AppError {
+  constructor(message = "Request Validation Error") {
+    super(400, message, "BAD_REQUEST");
+  }
+}

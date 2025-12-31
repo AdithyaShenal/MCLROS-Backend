@@ -1,8 +1,10 @@
-export default function validate(schema) {
+import { ValidationError } from "../errors/errors.js";
+
+export default function validate(schema, property = "body") {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req[property]);
     if (error) {
-      return res.status(400).json({ error: error.details[0].message });
+      throw new ValidationError(error.details[0].message);
     }
     next();
   };
