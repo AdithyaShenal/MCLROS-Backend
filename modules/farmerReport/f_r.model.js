@@ -25,6 +25,7 @@ const farmerReportSchema = new mongoose.Schema(
       type: String,
       enum: ['pending', 'resolved'],
       default: 'pending',
+      required:true
     },
   },
   { timestamps: true }
