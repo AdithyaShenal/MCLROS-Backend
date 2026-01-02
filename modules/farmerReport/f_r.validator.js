@@ -1,5 +1,5 @@
 import joi from 'joi'
-import mongoose, { Query } from 'mongoose'
+import mongoose from 'mongoose'
 
 const objectID = (value, helpers) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -23,10 +23,36 @@ export const getAllSchema = joi.object({
 })
 
 export const updateReportSchema = joi.object({
- report:joi.string(),
- status:joi.string().valid("pending","resolved")
+  report: joi.string(),
+  status: joi.string().valid('pending', 'resolved'),
 })
 
-export const bodyValidator=(req,res,next)=>{
+export const bodyValidator = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body)
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message })
+    }
+    next()
+  }
+}
 
+export const paramsValidator = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.params)
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message })
+    }
+    next()
+  }
+}
+
+export const queryValidator = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.query)
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message })
+    }
+    next()
+  }
 }
