@@ -14,7 +14,7 @@ export const createReportSchema = joi.object({
   status: joi.string().valid('pending', 'resolved').required(),
 })
 
-export const ReportIDSchema = joi.object({
+export const reportIDSchema = joi.object({
   id: joi.string().required(),
 })
 
