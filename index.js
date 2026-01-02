@@ -9,6 +9,7 @@ import fleetRoutes from "./modules/fleet/fleet.routes.js";
 import driverRoutes from "./modules/driver/driver.routes.js";
 import analyticsRoutes from "./modules/analytics/analaytics.routes.js";
 import farmerAuth from "./modules/user/farmer/farmer.login.js";
+import driverAuth from "./modules/user/driver/driver.login.js";
 
 // Middleware import
 // import cookieParser from "cookie-parser";
@@ -52,6 +53,7 @@ app.use(
 );
 
 // Routes
+app.use("/api/auth/driver", driverAuth);
 app.use("/api/auth/farmer", farmerAuth);
 app.use("/api/farmer", farmerRoutes);
 app.use("/api/trucks", fleetRoutes);
