@@ -37,15 +37,13 @@ router.get("/me", farmerAuth, productionController.getMyProductions);
 
 // ------------------------------------------------------ farmer application purpose
 
+router.get("/", productionController.getProductions);
+
 // Fetch all pending productions
 router.get("/pending/all", productionController.getAllPendingProductions);
 
-// Block a production
-router.post(
-  "/:production_id/block",
-  validate(productionValidator.blockProductionSchema),
-  productionController.blockProduction
-);
+// Hold a production
+router.patch("/block/:productionId", productionController.blockProduction);
 
 // Fetch production by farmer id
 router.get(

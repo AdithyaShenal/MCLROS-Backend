@@ -5,6 +5,9 @@ export async function miniDashboardService() {
     await repository.getTotalPendingProduction();
   const totalAvailableTruckCapacity = await repository.getTotalTruckCapacity();
 
+  const { autoClusterization, routeWiseClusterization } =
+    await repository.getClusterization();
+
   let autoResolvability = true;
   let routeWiseResolvability = true;
 
@@ -35,5 +38,7 @@ export async function miniDashboardService() {
     availableCapacity: totalAvailableTruckCapacity,
     autoResolvability,
     routeWiseResolvability,
+    autoClusterization,
+    routeWiseClusterization,
   };
 }

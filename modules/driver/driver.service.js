@@ -60,10 +60,18 @@ export async function getDriverByLicenseNo(driver_license_no) {
   return driver;
 }
 
-export async function toggleDriverStatus(driver_license_no, status) {
-  const driver = await driverRepository.findDriverByLicenseNo(
-    driver_license_no
-  );
-  if (!driver) throw new errors.NotFoundError("Driver not found");
-  return await driverRepository.toggleStatus(driver_license_no, status);
+export async function toggleDriverStatus(driverId, status) {
+  const driver = await driverRepository.findDriverById(driverId);
+
+  if (!driver) {
+    throw new errors.NotFoundError("Driver not found");
+  }
+
+  if (driver.status === "onDuty") {
+    throw new errors.ValidationError(
+      "Cannot change status while driver is on duty"
+    );
+  }
+
+  return await driverRepository.toggleStatus(driverId, status);
 }

@@ -11,7 +11,10 @@ router.post(
   farmerController.createFarmer
 );
 
-router.get("/all", farmerController.getAllFarmers);
+router.get("/", farmerController.getAllFarmers);
+
+// For testing
+router.get("/all", farmerController.getAll);
 
 router.get(
   "/:id",
@@ -33,7 +36,6 @@ router.get(
 
 router.put(
   "/:id",
-  validate(farmerValidator.farmerIdSchema),
   validate(farmerValidator.updateFarmerSchema),
   farmerController.updateFarmer
 );

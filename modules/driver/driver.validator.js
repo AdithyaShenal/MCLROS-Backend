@@ -16,12 +16,11 @@ export const updateDriverSchema = joi.object({
   name: joi.string(),
   phone: joi.string().pattern(/^\d{10}$/),
   driver_license_no: joi.string().required(),
-  status: joi.string().valid("available", "unavailable", "onDuty"),
+  status: joi.string().valid("available", "unavailable", "onDuty").optional(),
 });
 
 export const toggleStatusSchema = joi.object({
-  driver_license_no: joi.string().required(),
-  status: joi.string().valid("available", "unavailable", "onDuty").required(),
+  status: joi.string().valid("available", "unavailable").required(),
 });
 
 // middleware/validate.js
