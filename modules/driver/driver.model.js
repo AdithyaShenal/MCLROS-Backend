@@ -17,10 +17,18 @@ const driverSchema = new mongoose.Schema({
   driver_license_no: {
     type: String,
     required: true,
-    //validation should be here
     unique: true,
+  },
+  shortName: {
+    type: String,
+    required: true,
+  },
+  pinNo: {
+    type: String,
+    required: true,
   },
 });
 
 const Driver = mongoose.model("Driver", driverSchema);
+
 export default Driver;

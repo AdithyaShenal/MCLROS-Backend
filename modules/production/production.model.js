@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { farmerSchema } from "../farmer/farmer.model.js";
 
 const qualitySchema = new mongoose.Schema({
   fat: Number,
@@ -8,10 +7,40 @@ const qualitySchema = new mongoose.Schema({
   water_ratio: Number,
 });
 
+const embeddedFarmerSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    location: {
+      lat: { type: Number, required: true },
+      lon: { type: Number, required: true },
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    route: {
+      type: Number,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
 export const productionSchema = new mongoose.Schema(
   {
     farmer: {
-      type: farmerSchema,
+      type: embeddedFarmerSchema,
       required: true,
     },
 

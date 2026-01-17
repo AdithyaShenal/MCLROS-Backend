@@ -10,7 +10,7 @@ const stopsSchema = new mongoose.Schema({
 
 const routeSchema = new mongoose.Schema(
   {
-    vehicle_id: { type: Number, required: true },
+    vehicle_id: { type: String, required: true },
     license_no: { type: String, required: true },
     stops: { type: [stopsSchema], required: true },
     distance: { type: Number, required: true, min: 0 },
@@ -25,6 +25,7 @@ const routeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       default: null,
     },
+    route: { type: Number, min: 0 },
     activatedAt: { type: Date, default: null },
   },
   {

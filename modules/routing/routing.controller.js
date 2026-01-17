@@ -15,12 +15,14 @@ export async function generateRouteWiseAll(req, res) {
 
 // Params validation done.
 export async function generateRouteWise(req, res) {
-  const routes = await routingService.generateRouteWise(req.params.route_id);
+  const routes = await routingService.generateRouteWise(req.params.route);
   return res.status(200).json(routes);
 }
 
 // Body validation done.
 export async function dispatchRoutes(req, res) {
+  console.log(req.body);
+
   await routingService.dispatchRoutes(req.body);
   successResponse(res, "Successfully dispatched", 201);
 }

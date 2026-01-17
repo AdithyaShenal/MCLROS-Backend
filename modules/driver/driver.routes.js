@@ -2,16 +2,16 @@ import express from "express";
 import * as driverController from "./driver.controller.js";
 import * as driverValidator from "./driver.validator.js";
 
-
 const router = express.Router();
 
 router.post(
- "/",
- driverValidator.bodyValidator(driverValidator.createDriverSchema),
- driverController.createDriver
+  "/",
+  driverValidator.bodyValidator(driverValidator.createDriverSchema),
+  driverController.createDriver
 );
 
-router.get('/', driverController.findDrivers)
+// Get Drivers
+router.get("/", driverController.findDrivers);
 
 router.get(
   "/:id",
@@ -20,13 +20,13 @@ router.get(
 );
 
 router.put(
-  "/",
+  "/:driverId",
   driverValidator.bodyValidator(driverValidator.updateDriverSchema),
   driverController.updateDriver
 );
 
 router.patch(
-  "/status/",
+  "/status/:driverId",
   driverValidator.bodyValidator(driverValidator.toggleStatusSchema),
   driverController.toggleDriverStatus
 );

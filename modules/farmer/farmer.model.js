@@ -22,6 +22,18 @@ export const farmerSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    shortName: {
+      type: String,
+      required: true,
+      maxlength: 20,
+    },
+
+    pinNo: {
+      type: String,
+      required: true,
+      unique: true,
+      length: 4,
+    },
   },
   { timestamps: true }
 );

@@ -1,11 +1,11 @@
-import { ValidationError } from '../../errors/errors.js'
+import { ValidationError } from "../../errors/errors.js";
 
-export default function validate(schema, property = 'body') {
+export default function validate(schema, property = "body") {
   return (req, res, next) => {
-    const { error } = schema.validate(req[property])
+    const { error } = schema.validate(req[property]);
     if (error) {
-      throw new ValidationError(error.details[0].message)
+      throw new ValidationError(error.details[0].message);
     }
-    next()
-  }
+    next();
+  };
 }

@@ -1,7 +1,6 @@
 import Joi from "joi";
 
 export const submitProductionSchema = Joi.object({
-  farmer_id: Joi.string().required(),
   volume: Joi.number().min(0).required(),
 });
 
