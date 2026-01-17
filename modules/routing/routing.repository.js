@@ -2,6 +2,7 @@ import Production from "../production/production.model.js";
 import Route from "./routing.model.js";
 import Trucks from "../fleet/fleet.model.js";
 import mongoose from "mongoose";
+import Config from "../config/config.model.js";
 
 export async function getPendingProduction() {
   return await Production.find({ blocked: false, status: "pending" });
@@ -205,4 +206,12 @@ export async function getTotalTruckCapacity() {
   const totalAvailableTruckCapacity = result[0]?.totalCapacity || 0;
 
   return totalAvailableTruckCapacity;
+}
+
+export async function getDepotLocation() {
+  const config = await Config.findOne();
+
+  const depotLocation = config.depot_location;
+
+  return depotLocation;
 }

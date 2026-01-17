@@ -2,8 +2,7 @@ import joi from "joi";
 
 export const createTruckSchema = joi.object({
   license_no: joi.string().required(),
-  capacity: joi.number().min(0).max(2500),
-  status: joi.string().valid("available", "unavailable", "inService"),
+  capacity: joi.number().min(0).max(10000),
   model: joi.string().required(),
   distance_travelled: joi.number().min(0),
   route: joi.number().integer().min(1).max(6),
@@ -19,18 +18,11 @@ export const fleetRouteSchema = joi.object({
 
 export const updateTruckSchema = joi.object({
   license_no: joi.string().required(),
-  capacity: joi.number().min(0).max(2500),
-  status: joi.string().valid("available", "unavailable", "inService"),
-  model: joi.string(),
-  distance_travelled: joi.string(),
-  route: joi.number().integer().min(1).max(6),
+  capacity: joi.number().min(0).max(10000).required(),
+  model: joi.string().required(),
+  distance_travelled: joi.string().required(),
+  route: joi.number().integer().min(1).max(6).required(),
 });
-
-// export const deleteTruckSchema = joi.object({
-//   params: joi.object({
-//     id: joi.string().required(),
-//   }),
-// });
 
 export const statusTruckSchema = joi.object({
   body: joi.object({
@@ -53,20 +45,9 @@ export const postTruckSchema = joi.object({
   }),
 });
 
-// export const routeTruckSchema = joi.object({
-//   params: joi.object({
-//     route: joi.string().valid(1,2,3,4,5,6).required(),
-//   }),
-// });
-
 export const toggleStatusSchema = joi.object({
-  license_no: joi.string().required(),
-  status: joi
-    .string()
-    .valid("available", "unavailable", "inService")
-    .required(),
+  status: joi.string().valid("available", "unavailable").required(),
 });
-/* .unknown(false)//unessacary property check */
 
 export const validateBody = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body);

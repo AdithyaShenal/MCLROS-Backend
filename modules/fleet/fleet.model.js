@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 
-const fleetSchema = new mongoose.Schema(
+const truckSchema = new mongoose.Schema(
   {
     license_no: {
       type: String,
@@ -36,6 +36,6 @@ const fleetSchema = new mongoose.Schema(
   }
 );
 
-export const Trucks = model("Trucks", fleetSchema);
+export const Trucks = model("Truck", truckSchema);
 
 export default Trucks;

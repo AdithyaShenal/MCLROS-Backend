@@ -3,9 +3,11 @@ import * as routingRepository from "./routing.repository.js";
 import * as errors from "../../errors/errors.js";
 import Route from "./routing.model.js";
 
-const depot = { lat: 7.019041, lon: 79.969565 };
+// const depot = { lat: 5.948082, lon: 80.545442 };
 
 export async function generateRoutesAuto() {
+  const depot = await routingRepository.getDepotLocation();
+
   const productions = await routingRepository.getPendingProduction();
 
   // Handling Error
@@ -58,6 +60,14 @@ export async function generateRoutesAuto() {
   if (coords.length !== demands.length) {
     throw new errors.InternalError("coords and demands length must be same");
   }
+
+  const req = {
+    coords,
+    demands,
+    vehicle_capacities,
+  };
+
+  console.log(JSON.stringify(req));
 
   let vrpResponse;
   let routes;

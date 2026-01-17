@@ -1,6 +1,7 @@
 import Route from "../routing/routing.model.js";
 import Production from "../production/production.model.js";
 import Trucks from "../fleet/fleet.model.js";
+import RouteConfig from "../routing/routing.config.model.js";
 
 export async function getTotalPendingProduction() {
   const result = await Production.aggregate([
@@ -114,4 +115,15 @@ export async function getTruckCapacityByRoute() {
   ]);
 
   return result;
+}
+
+export async function getClusterization() {
+  let config = await RouteConfig.findOne();
+
+  // Auto-create if missing (important!)
+  if (!config) {
+    config = await RouteConfig.create({});
+  }
+
+  return config;
 }

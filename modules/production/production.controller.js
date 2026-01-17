@@ -8,6 +8,49 @@ import _ from "lodash";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+export async function getProductions(req, res) {
+  const {
+    search = "",
+    filterBy = "none",
+    date = "",
+    status = "all",
+  } = req.query;
+
+  const query = {};
+
+  if (status !== "all") {
+    query.status = status;
+  }
+
+  if (search && filterBy === "name") {
+    query["farmer.name"] = {
+      $regex: search,
+      $options: "i",
+    };
+  }
+
+  if (search && filterBy === "id") {
+    query["farmer._id"] = search;
+  }
+
+  if (date) {
+    const start = new Date(date);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    query.registration_time = {
+      $gte: start,
+      $lte: end,
+    };
+  }
+
+  const productions = await Production.find(query)
+    .populate("farmer")
+    .sort({ registration_time: -1 });
+
+  res.status(200).json(productions);
+}
+
 export async function submitProduction(req, res, next) {
   const farmer_id = req.user._id;
   const volume = req.body.volume;
@@ -77,18 +120,12 @@ export async function getAllPendingProductions(req, res, next) {
   }
 }
 
-export async function blockProduction(req, res, next) {
-  try {
-    const production = await productionService.blockProduction(
-      req.params.production_id
-    );
-    return res.json({
-      message: "Production blocked successfully",
-      production,
-    });
-  } catch (err) {
-    next(err);
-  }
+export async function blockProduction(req, res) {
+  const productionId = req.params.productionId;
+
+  const production = await productionService.blockProduction(productionId);
+
+  return res.status(200).json(production);
 }
 
 export async function getProductionsByFarmerId(req, res, next) {

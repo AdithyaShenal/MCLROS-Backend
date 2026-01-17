@@ -17,7 +17,6 @@ const driverSchema = new mongoose.Schema({
   driver_license_no: {
     type: String,
     required: true,
-    //validation should be here
     unique: true,
   },
   shortName: {

@@ -10,6 +10,7 @@ import driverRoutes from "./modules/driver/driver.routes.js";
 import analyticsRoutes from "./modules/analytics/analaytics.routes.js";
 import farmerAuth from "./modules/user/farmer/farmer.login.js";
 import driverAuth from "./modules/user/driver/driver.login.js";
+import configRoutes from "./modules/config/config.routes.js";
 
 // Middleware import
 // import cookieParser from "cookie-parser";
@@ -47,7 +48,7 @@ app.use(
       "capacitor://localhost",
       "https://mclros-backend-2.onrender.com",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
@@ -62,6 +63,7 @@ app.use("/api/driver", driverRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/config", configRoutes);
 
 // app.use((req, res, next) => {
 //   res.status(201).json("Hello this is MCLROS System");

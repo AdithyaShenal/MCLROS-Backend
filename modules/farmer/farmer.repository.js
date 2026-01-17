@@ -40,9 +40,13 @@ export async function findByRoute(route) {
 }
 
 export async function update(id, data) {
-  return await Farmer.findByIdAndUpdate(id, data, {
-    new: true,
-  });
+  return await Farmer.findByIdAndUpdate(
+    id,
+    { $set: data },
+    {
+      new: true,
+    }
+  );
 }
 
 export async function remove(id) {

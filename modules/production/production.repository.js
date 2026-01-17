@@ -25,7 +25,7 @@ export async function submit(data) {
 }
 
 export async function findAllPending() {
-  return await Production.find({ status: "pending" }).sort({
+  return await Production.find({ status: "pending", blocked: false }).sort({
     registration_time: -1,
   });
 }
@@ -34,8 +34,8 @@ export async function findById(id) {
   return Production.findById(id);
 }
 
-export async function updateStatus(id, status) {
-  return Production.findByIdAndUpdate(id, { status }, { new: true });
+export async function updateStatus(id, blocked) {
+  return Production.findByIdAndUpdate(id, { blocked }, { new: true });
 }
 
 export async function findByFarmerId(farmer_id) {

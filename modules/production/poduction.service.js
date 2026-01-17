@@ -190,15 +190,17 @@ export async function getAllPendingProductions() {
   return productions;
 }
 
-export async function blockProduction(production_id) {
-  const production = await productionRepository.findById(production_id);
-  if (!production) throw new Error("Production record not found");
+export async function blockProduction(productionId) {
+  const production = await productionRepository.findById(productionId);
+  if (!production) throw new Error("Production with given ID not found");
 
-  if (production.status === "blocked") {
-    throw new Error("Production is already blocked");
-  }
+  if (production.status !== "pending")
+    throw new errors.ConflictError(
+      "Cannot hold productions that is not pending"
+    );
 
-  return productionRepository.updateStatus(production_id, "blocked");
+  const newBlockedStatus = !production.blocked;
+  return productionRepository.updateStatus(productionId, newBlockedStatus);
 }
 
 export async function getProductionsByFarmerId(farmer_id) {
