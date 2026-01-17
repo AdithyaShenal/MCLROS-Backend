@@ -11,6 +11,7 @@ export const createFarmerSchema = Joi.object({
     .pattern(/^[0-9]{10}$/)
     .required(),
   route: Joi.number().integer().min(1).max(6).required(),
+  shortName: Joi.string().required(),
 });
 
 export const farmerIdSchema = Joi.object({
@@ -32,16 +33,10 @@ export const farmerRouteSchema = Joi.object({
 });
 
 export const updateFarmerSchema = Joi.object({
-  body: Joi.object({
-    name: Joi.string(),
-    location: Joi.object({
-      lat: Joi.number(),
-      lng: Joi.number(),
-    }),
-    address: Joi.string(),
-    phone: Joi.string().pattern(/^[0-9]{10}$/),
-    route: Joi.number().integer().min(1).max(6),
-  }),
+  name: Joi.string(),
+  address: Joi.string(),
+  phone: Joi.string().pattern(/^[0-9]{10}$/),
+  route: Joi.number().integer().min(1).max(6),
 });
 
 export default (schema) => (req, res, next) => {

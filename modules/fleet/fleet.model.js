@@ -1,7 +1,6 @@
+import mongoose, { model } from "mongoose";
 
-import mongoose, { model } from 'mongoose'
-
-const fleetSchema = new mongoose.Schema(
+const truckSchema = new mongoose.Schema(
   {
     license_no: {
       type: String,
@@ -15,15 +14,16 @@ const fleetSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['available', 'unavailable', 'inService'],
-      default: 'available',
+      enum: ["available", "unavailable", "inService"],
+      default: "available",
     },
     model: {
       type: String,
       required: true,
     },
     distance_travelled: {
-      type: String,
+      type: Number,
+      min: 0,
     },
     route: {
       type: Number,
@@ -36,6 +36,6 @@ const fleetSchema = new mongoose.Schema(
   }
 );
 
-export const Trucks = model("Trucks", fleetSchema);
+export const Trucks = model("Truck", truckSchema);
 
 export default Trucks;

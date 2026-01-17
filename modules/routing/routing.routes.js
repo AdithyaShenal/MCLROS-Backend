@@ -13,7 +13,7 @@ import {
   routeCompletetionController,
   getCompletedRoutesController,
   getDispatchedController,
-  getInProgreeController,
+  getInProgressController,
   deleteRouteController,
   getHistoryController,
 } from "./routing.controller.js";
@@ -30,16 +30,12 @@ router.get("/optimize/auto", generateRoutesAuto);
 router.get("/optimize/route-wise/all", generateRouteWiseAll);
 
 // Admin Request VRP Route-Wise Solution Using Route ID (Optimized Paths)
-router.get(
-  "/optimize/route-wise/:route_id",
-  validate(routeValidator.routeIdSchema, "params"),
-  generateRouteWise
-);
+router.get("/optimize/route-wise/:route", generateRouteWise);
 
 // Dispatch Generated Routes (Handle Idemponency)
 router.post(
   "/dispatch",
-  validate(routeValidator.dispatchRoutesSchema),
+  // validate(routeValidator.dispatchRoutesSchema),
   dispatchRoutes
 );
 
