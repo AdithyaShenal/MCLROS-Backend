@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 // Route imports
 import farmerRoutes from "./modules/farmer/farmer.routes.js";
 import productionRoutes from "./modules/production/poduction.routes.js";
+import farmerReportRoutes from "./modules/farmerReport/f_r.routes.js";
 import routing from "./modules/routing/routing.routes.js";
 import fleetRoutes from "./modules/fleet/fleet.routes.js";
 import driverRoutes from "./modules/driver/driver.routes.js";
@@ -60,7 +61,9 @@ app.use("/api/auth/farmer", farmerAuth);
 app.use("/api/farmer", farmerRoutes);
 app.use("/api/trucks", fleetRoutes);
 app.use("/api/driver", driverRoutes);
+app.use("/api/reports", farmerReportRoutes);
 app.use("/api/production", productionRoutes);
+app.use("/api/config", config);
 app.use("/api/routing", routing);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/config", configRoutes);
