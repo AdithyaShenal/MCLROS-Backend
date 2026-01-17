@@ -63,7 +63,6 @@ app.use("/api/trucks", fleetRoutes);
 app.use("/api/driver", driverRoutes);
 app.use("/api/reports", farmerReportRoutes);
 app.use("/api/production", productionRoutes);
-app.use("/api/config", config);
 app.use("/api/routing", routing);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/config", configRoutes);
