@@ -1,4 +1,4 @@
-# MilkFlow – Main Backend Service
+# MilkFlow – Main Backend Service (Node JS)
 MilkFlow - An Intelligent Dairy Supply Chain & Route Optimization System with VRP-Based Routing Logistics
 
 ## Overview
