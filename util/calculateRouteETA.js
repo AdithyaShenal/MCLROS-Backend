@@ -14,26 +14,31 @@ export async function calculateRouteETA(route) {
 
   for (let i = 0; i < route.stops.length; i++) {
     const stop = route.stops[i];
-    const farmer = stop.farmer;
 
     if (!stop.production || !stop.production.farmer) {
-      continue;
+      continue; // skip stops without production/farmer
     }
+
+    const farmer = stop.production.farmer;
 
     if (i > 0) {
-      const prevFarmer = route.stops[i - 1].farmer;
+      const prevStop = route.stops[i - 1];
+      if (prevStop.production?.farmer) {
+        const prevFarmer = prevStop.production.farmer;
 
-      const distance = haversineDistance(
-        prevFarmer.location.lat,
-        prevFarmer.location.lon,
-        farmer.location.lat,
-        farmer.location.lon,
-      );
+        const distance = haversineDistance(
+          prevFarmer.location.lat,
+          prevFarmer.location.lon,
+          farmer.location.lat,
+          farmer.location.lon,
+        );
 
-      const travelMinutes = (distance / AVG_SPEED_KMPH) * 60;
-      currentTime = new Date(currentTime.getTime() + travelMinutes * 60000);
+        const travelMinutes = (distance / AVG_SPEED_KMPH) * 60;
+        currentTime = new Date(currentTime.getTime() + travelMinutes * 60000);
+      }
     }
 
+    // add service time
     currentTime = new Date(currentTime.getTime() + SERVICE_TIME_MIN * 60000);
 
     await RouteETA.create({
