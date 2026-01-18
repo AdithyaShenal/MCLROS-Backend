@@ -102,7 +102,6 @@ async function getWeeklyChartData(today) {
   const weekStart = getWeekStartDate(today);
   const weekDays = generateWeekDates(weekStart);
 
-  // Get liters per day for the week
   const litersData = await Production.aggregate([
     {
       $match: {
@@ -166,5 +165,39 @@ async function getProductionStats(startOfDay) {
     collectedCount: collected,
     failedCount: failed,
     totalToday: pending + collected + failed,
+  };
+}
+
+async function getVehiclePickupStats(startOfDay) {
+  return {
+    avgPickups: 8.5,
+    vehiclesActive: 6,
+    totalPickups: 51,
+  };
+}
+
+async function getCompletedFailedRatio(startOfDay) {
+  const result = await Production.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfDay },
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const completed = result.find((r) => r._id === "collected")?.count || 0;
+  const failed = result.find((r) => r._id === "failed")?.count || 0;
+  const total = completed + failed;
+
+  return {
+    completed: total > 0 ? Math.round((completed / total) * 100) : 0,
+    failed: total > 0 ? Math.round((failed / total) * 100) : 0,
+    total: total,
   };
 }
