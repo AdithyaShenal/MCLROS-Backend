@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.get("/dashboard", dashboardController.getDashboardData);
 
+router.get("/dashboard/:date", dashboardController.getDashboardData);
+
 export default router;
