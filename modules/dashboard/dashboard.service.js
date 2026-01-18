@@ -241,3 +241,22 @@ async function getRouteEfficiency(today) {
     routeUtilization: 87,
   };
 }
+
+function getWeekStartDate(date) {
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
+  return new Date(date.setDate(diff));
+}
+
+function generateWeekDates(startDate) {
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + i);
+    dates.push({
+      dateStr: date.toISOString().split("T")[0],
+      dayName: date.toLocaleDateString("en-US", { weekday: "short" }),
+    });
+  }
+  return dates;
+}
