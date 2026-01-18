@@ -201,3 +201,43 @@ async function getCompletedFailedRatio(startOfDay) {
     total: total,
   };
 }
+
+async function getDailyProductionCount(today) {
+  const weekStart = getWeekStartDate(today);
+
+  const result = await Production.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: weekStart },
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
+  return result.map((item) => ({
+    date: item._id,
+    productions: item.count,
+  }));
+}
+
+async function getQualityTrends(today) {
+  return {
+    avgFatContent: 4.2,
+    avgDensity: 1.031,
+    rejectionRate: 2.3,
+  };
+}
+
+async function getRouteEfficiency(today) {
+  return {
+    mostEfficientRoute: 3,
+    avgCollectionTime: 3.5,
+    routeUtilization: 87,
+  };
+}
