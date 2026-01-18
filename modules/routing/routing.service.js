@@ -13,7 +13,7 @@ export async function generateRoutesAuto() {
   // Handling Error
   if (productions.length === 0) {
     throw new errors.NotFoundError(
-      "No pending productions available at this moment"
+      "No pending productions available at this moment",
     );
   }
 
@@ -43,11 +43,11 @@ export async function generateRoutesAuto() {
   // Check for VRP validity (If any route not satisfy this requirement will throw error) -------------
   const totalDemand = demands.reduce(
     (accumulated, currentValue) => accumulated + currentValue,
-    0
+    0,
   );
   const totalCapacity = vehicle_capacities.reduce(
     (accumulated, currentValue) => accumulated + currentValue,
-    0
+    0,
   );
 
   if (totalCapacity < totalDemand) {
@@ -79,7 +79,7 @@ export async function generateRoutesAuto() {
         coords,
         demands,
         vehicle_capacities,
-      }
+      },
     );
   } catch (err) {
     throw new Error(`VRP service unreachable: ${err.message}`);
@@ -155,7 +155,7 @@ export async function generateRouteWiseAll() {
   // Handling Error
   if (!productions || productions.length === 0) {
     throw new errors.NotFoundError(
-      "No pending productions available at this moment"
+      "No pending productions available at this moment",
     );
   }
 
@@ -227,11 +227,11 @@ export async function generateRouteWiseAll() {
     // Check for VRP validity (If any route not satisfy this requirement will throw error)
     const totalDemand = structure.demands.reduce(
       (accumulated, currentValue) => accumulated + currentValue,
-      0
+      0,
     );
     const totalCapacity = structure.vehicle_capacities.reduce(
       (accumulated, currentValue) => accumulated + currentValue,
-      0
+      0,
     );
 
     if (totalCapacity < totalDemand) {
@@ -245,7 +245,7 @@ export async function generateRouteWiseAll() {
   try {
     vrpResponse = await axios.post(
       "http://localhost:8000/route-optimize/route-wise/all",
-      { requestBody }
+      { requestBody },
     );
   } catch (err) {
     console.log(err);
@@ -301,20 +301,18 @@ export async function generateRouteWiseAll() {
 
 // Generate VRP solution route-wise by route --------------------------------------------------------
 export async function generateRouteWise(routeId) {
-  const productions = await routingRepository.getPendingProductionByRoute(
-    routeId
-  );
+  const productions =
+    await routingRepository.getPendingProductionByRoute(routeId);
 
   // Handling Error
   if (productions.length === 0) {
     throw new errors.NotFoundError(
-      `No pending productions available for Route - ${routeId} at this moment`
+      `No pending productions available for Route - ${routeId} at this moment`,
     );
   }
 
-  const availableTrucks = await routingRepository.getAllAvailableTrucksByRoute(
-    routeId
-  );
+  const availableTrucks =
+    await routingRepository.getAllAvailableTrucksByRoute(routeId);
 
   if (availableTrucks.length === 0) {
     throw new errors.NotFoundError(`No trucks available for route ${routeId}`);
@@ -341,16 +339,16 @@ export async function generateRouteWise(routeId) {
   // Check for VRP validity (If any route not satisfy this requirement will throw error) -------------
   const totalDemand = demands.reduce(
     (accumulated, currentValue) => accumulated + currentValue,
-    0
+    0,
   );
   const totalCapacity = vehicleCapacities.reduce(
     (accumulated, currentValue) => accumulated + currentValue,
-    0
+    0,
   );
 
   if (totalCapacity < totalDemand) {
     throw new errors.BadRequestError(
-      `Insufficient capacity in route ${routeId}`
+      `Insufficient capacity in route ${routeId}`,
     );
   }
 
@@ -371,7 +369,7 @@ export async function generateRouteWise(routeId) {
         coords,
         demands,
         vehicle_capacities: vehicleCapacities,
-      }
+      },
     );
   } catch (err) {
     throw new Error(`VRP service unreachable: ${err.message}`);
@@ -486,11 +484,11 @@ export async function confirmProductionPickup(
   route_id,
   production_id,
   driver_id,
-  collectedVolume
+  collectedVolume,
 ) {
   if (collectedVolume < 0)
     throw new errors.BadRequestError(
-      "Collected volume cannot be smaller than 0"
+      "Collected volume cannot be smaller than 0",
     );
 
   const route = await routingRepository.getRouteById(route_id);
@@ -501,7 +499,7 @@ export async function confirmProductionPickup(
     throw new errors.UnauthorizedError("This route belongs to other driver");
 
   const stop = route.stops.find(
-    (s) => s.production && s.production._id.equals(production_id)
+    (s) => s.production && s.production._id.equals(production_id),
   );
 
   if (!stop) {
@@ -531,7 +529,7 @@ export async function issuePickupReportService(
   route_id,
   production_id,
   driver_id,
-  failureReason
+  failureReason,
 ) {
   const route = await routingRepository.getRouteById(route_id);
 
@@ -541,7 +539,7 @@ export async function issuePickupReportService(
     throw new errors.UnauthorizedError("This route belongs to other driver");
 
   const stop = route.stops.find(
-    (s) => s.production && s.production._id.equals(production_id)
+    (s) => s.production && s.production._id.equals(production_id),
   );
 
   if (!stop) {
@@ -601,6 +599,8 @@ export async function cancelRouteActivation(route_id) {
   return;
 }
 
+import { calculateRouteETA } from "../../util/calculateRouteETA.js";
+
 // Route activation --------------------------------------------------------
 export async function activateRoute(driver_id, route_id) {
   const route = await routingRepository.getRouteById(route_id);
@@ -626,7 +626,7 @@ export async function activateRoute(driver_id, route_id) {
 
   if (otherActiveRoute) {
     throw new errors.BadRequestError(
-      "Cannot activate this route. Driver already has another active route."
+      "Cannot activate this route. Driver already has another active route.",
     );
   }
 
@@ -636,6 +636,8 @@ export async function activateRoute(driver_id, route_id) {
   route.status = "inProgress";
 
   await routingRepository.saveRoute(route);
+
+  calculateRouteETA(route);
 
   return;
 }
@@ -657,7 +659,7 @@ export async function routeCompletetionService(route_id, driver_id) {
 
   if (route.status !== "inProgress") {
     throw new errors.BadRequestError(
-      "Only in-progress routes can be completed"
+      "Only in-progress routes can be completed",
     );
   }
 

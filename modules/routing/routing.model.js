@@ -30,7 +30,7 @@ const routeSchema = new mongoose.Schema(
   },
   {
     optimisticConcurrency: true,
-  }
+  },
 );
 
 // routeSchema.set("optimisticConcurrency", true);
