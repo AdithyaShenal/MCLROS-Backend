@@ -97,3 +97,74 @@ async function getMonthCollection(startOfMonth) {
     totalVolume: result[0]?.totalVolume || 0,
   };
 }
+
+async function getWeeklyChartData(today) {
+  const weekStart = getWeekStartDate(today);
+  const weekDays = generateWeekDates(weekStart);
+
+  // Get liters per day for the week
+  const litersData = await Production.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: weekStart },
+        status: "collected",
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        totalLiters: { $sum: "$collectedVolume" },
+        totalDistance: {
+          $sum: {
+            $cond: [
+              { $ifNull: ["$collectionDistance", false] },
+              "$collectionDistance",
+              0,
+            ],
+          },
+        },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
+  // Format for Chart.js
+  const formattedLiters = weekDays.map((day) => {
+    const found = litersData.find((d) => d._id === day.dateStr);
+    return {
+      date: day.dateStr,
+      liters: found?.totalLiters || 0,
+      distance: found?.totalDistance || 0,
+    };
+  });
+
+  return {
+    litersData: formattedLiters.map((d) => ({ x: d.date, y: d.liters })),
+    distanceData: formattedLiters.map((d) => ({ x: d.date, y: d.distance })),
+    totalDataPoints: litersData.length,
+  };
+}
+
+async function getProductionStats(startOfDay) {
+  const [pending, collected, failed] = await Promise.all([
+    Production.countDocuments({
+      createdAt: { $gte: startOfDay },
+      status: "pending",
+    }),
+    Production.countDocuments({
+      createdAt: { $gte: startOfDay },
+      status: "collected",
+    }),
+    Production.countDocuments({
+      createdAt: { $gte: startOfDay },
+      status: "failed",
+    }),
+  ]);
+
+  return {
+    pendingCount: pending,
+    collectedCount: collected,
+    failedCount: failed,
+    totalToday: pending + collected + failed,
+  };
+}
