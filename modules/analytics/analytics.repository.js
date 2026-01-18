@@ -116,14 +116,3 @@ export async function getTruckCapacityByRoute() {
 
   return result;
 }
-
-export async function getClusterization() {
-  let config = await RouteConfig.findOne();
-
-  // Auto-create if missing (important!)
-  if (!config) {
-    config = await RouteConfig.create({});
-  }
-
-  return config;
-}

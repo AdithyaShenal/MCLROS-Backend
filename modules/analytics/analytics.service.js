@@ -5,32 +5,29 @@ export async function miniDashboardService() {
     await repository.getTotalPendingProduction();
   const totalAvailableTruckCapacity = await repository.getTotalTruckCapacity();
 
-  const { autoClusterization, routeWiseClusterization } =
-    await repository.getClusterization();
-
-  let autoResolvability = true;
-  let routeWiseResolvability = true;
-
-  if (totalPendingProductionVolume > totalAvailableTruckCapacity) {
-    autoResolvability = false;
-  }
+  const autoResolvability =
+    totalPendingProductionVolume <= totalAvailableTruckCapacity;
 
   const productionSumByRoute = await repository.getProductionSumByRoute();
   const truckCapacityByRoute = await repository.getTruckCapacityByRoute();
 
-  const capacityMap = {};
-  truckCapacityByRoute.forEach((t) => {
-    capacityMap[t.route] = t.totalCapacity;
-  });
+  const productionMap = new Map(
+    productionSumByRoute.map((p) => [p.route, p.totalVolume]),
+  );
 
-  productionSumByRoute.forEach((p) => {
-    const route = p.route;
-    const productionVolume = p.totalVolume;
-    const capacity = capacityMap[route] || 0;
+  let routeWiseResolvability = true;
 
-    if (productionVolume > capacity) {
+  const capacityMap = truckCapacityByRoute.map((t) => {
+    const totalVolume = productionMap.get(t.route) || 0;
+
+    if (totalVolume > t.totalCapacity) {
       routeWiseResolvability = false;
     }
+
+    return {
+      ...t,
+      totalVolume,
+    };
   });
 
   return {
@@ -38,7 +35,6 @@ export async function miniDashboardService() {
     availableCapacity: totalAvailableTruckCapacity,
     autoResolvability,
     routeWiseResolvability,
-    autoClusterization,
-    routeWiseClusterization,
+    capacityMap,
   };
 }

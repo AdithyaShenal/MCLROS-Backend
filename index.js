@@ -12,6 +12,7 @@ import analyticsRoutes from "./modules/analytics/analaytics.routes.js";
 import farmerAuth from "./modules/user/farmer/farmer.login.js";
 import driverAuth from "./modules/user/driver/driver.login.js";
 import configRoutes from "./modules/config/config.routes.js";
+import adminRoutes from "./modules/user/admin/admin.login.js";
 
 // Middleware import
 // import cookieParser from "cookie-parser";
@@ -26,7 +27,7 @@ const app = express();
 mongoose
   .connect(
     // 'mongodb://localhost:27017/MCLROS_DB'
-    "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority"
+    "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority",
   )
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => {
@@ -52,10 +53,11 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 
 // Routes
+app.use("/api/auth/admin", adminRoutes);
 app.use("/api/auth/driver", driverAuth);
 app.use("/api/auth/farmer", farmerAuth);
 app.use("/api/farmer", farmerRoutes);
