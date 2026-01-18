@@ -53,3 +53,47 @@ export async function compileDashboardData(today) {
     },
   };
 }
+
+async function getTodayCollection(startOfDay) {
+  const result = await Production.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfDay },
+        status: "collected",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalVolume: { $sum: "$collectedVolume" },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  return {
+    totalVolume: result[0]?.totalVolume || 0,
+    totalCollections: result[0]?.count || 0,
+  };
+}
+
+async function getMonthCollection(startOfMonth) {
+  const result = await Production.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfMonth },
+        status: "collected",
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalVolume: { $sum: "$collectedVolume" },
+      },
+    },
+  ]);
+
+  return {
+    totalVolume: result[0]?.totalVolume || 0,
+  };
+}
