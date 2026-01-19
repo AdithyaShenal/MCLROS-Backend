@@ -13,6 +13,7 @@ import farmerAuth from "./modules/user/farmer/farmer.login.js";
 import driverAuth from "./modules/user/driver/driver.login.js";
 import configRoutes from "./modules/config/config.routes.js";
 import adminRoutes from "./modules/user/admin/admin.login.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 
 // Middleware import
 // import cookieParser from "cookie-parser";
@@ -68,6 +69,7 @@ app.use("/api/production", productionRoutes);
 app.use("/api/routing", routing);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/config", configRoutes);
+app.use("/api/analytics", dashboardRoutes);
 
 // app.use((req, res, next) => {
 //   res.status(201).json("Hello this is MCLROS System");
