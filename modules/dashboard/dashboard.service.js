@@ -16,10 +16,10 @@ export async function compileDashboardData(today) {
   ] = await Promise.all([
     getTodayCollection(startofDay),
     getMonthCollection(startofMonths),
-    getWeeklChartData(today),
+    getWeeklyChartData(today),
     getProductionStats(startofDay),
     getVehiclePickupStats(startofDay),
-    getCompletedFialedRatio(startofDay),
+    getCompletedFailedRatio(startofDay),
     getDailyProductionCount(today),
   ]);
 
