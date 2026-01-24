@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 // Route imports
 import farmerRoutes from "./modules/farmer/farmer.routes.js";
@@ -20,20 +21,25 @@ import morgan from "morgan";
 import err from "./middleware/error.js";
 import cors from "cors";
 
+dotenv.config();
 const app = express();
 
 // DB Connection
-
 mongoose
-  .connect(
-    // 'mongodb://localhost:27017/MCLROS_DB'
-    "mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority",
-  )
+  .connect(process.env.MONGO_URI || "mongodb://localhost:27017/MCLROS_DB")
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => {
     console.error("MongoDB connection error:", err.message);
     process.exit(1);
   });
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+});
 
 //Middlewares
 app.use(morgan("tiny"));
@@ -75,7 +81,7 @@ app.use("/api/config", configRoutes);
 
 app.use(err);
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);

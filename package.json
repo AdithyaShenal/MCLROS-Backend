@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "devp": "nodemon index.js",
-    "test": "echo \"No tests specified yet\" && exit 0"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +27,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dayjs": "^1.11.19",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "joi": "^18.0.2",
