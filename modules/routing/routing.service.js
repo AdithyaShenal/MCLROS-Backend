@@ -3,7 +3,8 @@ import * as routingRepository from "./routing.repository.js";
 import * as errors from "../../errors/errors.js";
 import Route from "./routing.model.js";
 
-// const depot = { lat: 5.948082, lon: 80.545442 };
+const EXTERNEL_URL = "http://localhost:8000";
+const CVRP_SERVICE_URL = process.env.CVRP_SERVICE_URL;
 
 export async function generateRoutesAuto() {
   const depot = await routingRepository.getDepotLocation();
@@ -74,7 +75,8 @@ export async function generateRoutesAuto() {
 
   try {
     vrpResponse = await axios.post(
-      "http://localhost:8000/route-optimize/auto",
+      // "http://localhost:8000/route-optimize/auto",
+      `${CVRP_SERVICE_URL}/api/routeOptimize/auto`,
       {
         coords,
         demands,
@@ -151,6 +153,7 @@ export async function generateRoutesAuto() {
 // Generate VRP solution route-wise-all -----------------------------------------------------------------
 export async function generateRouteWiseAll() {
   const productions = await routingRepository.getPendingProduction();
+  const depot = await routingRepository.getDepotLocation();
 
   // Handling Error
   if (!productions || productions.length === 0) {
@@ -239,13 +242,18 @@ export async function generateRouteWiseAll() {
     }
   }
 
-  // Calling to VRP Service to get the solution-----------------------
+  console.log(JSON.stringify(requestBody));
+
+  console.log(JSON.stringify({ productionIndexMap }));
+
+  // Calling to VRP Service to get the solution------
   let vrpResponse;
 
   try {
     vrpResponse = await axios.post(
-      "http://localhost:8000/route-optimize/route-wise/all",
-      { requestBody },
+      // "http://localhost:8000/route-optimize/route-wise/all",
+      `${CVRP_SERVICE_URL}/api/routeOptimize/routeWise`,
+      requestBody,
     );
   } catch (err) {
     console.log(err);
@@ -253,6 +261,8 @@ export async function generateRouteWiseAll() {
   }
 
   const routes = vrpResponse.data;
+
+  console.log(JSON.stringify(routes));
 
   // Handling Error
   if (routes.length === 0)
@@ -303,6 +313,10 @@ export async function generateRouteWiseAll() {
 export async function generateRouteWise(routeId) {
   const productions =
     await routingRepository.getPendingProductionByRoute(routeId);
+
+  const depot = await routingRepository.getDepotLocation();
+
+  if (!depot) throw new errors.NotFoundError("Depot Location not found");
 
   // Handling Error
   if (productions.length === 0) {
@@ -364,7 +378,8 @@ export async function generateRouteWise(routeId) {
 
   try {
     vrpResponse = await axios.post(
-      "http://localhost:8000/route-optimize/auto",
+      // "http://localhost:8000/route-optimize/auto",
+      `${CVRP_SERVICE_URL}/api/routeOptimize/auto`,
       {
         coords,
         demands,
