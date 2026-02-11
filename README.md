@@ -15,6 +15,9 @@ Other major components include:
 - Farmer Mobile Application (React + Capacitor)
 - Driver Mobile Application (React + Capacitor)
 
+Mobile Applications APKs - Google Drive Link
+https://drive.google.com/drive/folders/1MHDMqMoZ-yUtba8vVB5KJJG9Pbi-AwPr?usp=sharing
+
 ## Responsibilities
 - Supply chain data management
 - User and role management
